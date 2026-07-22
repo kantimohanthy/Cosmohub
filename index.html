@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CosmoHub — The Terminal & Ontology for the Space Economy</title>
-<meta name="description" content="CosmoHub is the ontology-first bridge between space research institutes and talent — the Palantir Gotham of the space economy, the way Bloomberg is the terminal for finance.">
+<meta name="description" content="CosmoHub is the ontology-first intelligence platform connecting space research institutes, universities, and missions directly with talent — enthusiasts, students, and research fellows.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
   button, input, select{font-family:inherit;}
   .wrap{max-width:1200px; margin:0 auto; padding:0 32px;}
 
-  /* Topbar */
+  /* Topbar & Navigation */
   .topbar{
     position:sticky; top:0; z-index:100;
     background:rgba(7,10,15,0.92);
@@ -69,13 +69,27 @@
   .nav-cta{
     font-family:var(--mono); font-size:12.5px; font-weight:500;
     padding:8px 16px; border:1px solid var(--amber); color:var(--amber);
-    letter-spacing:0.04em; transition:all .2s; cursor:pointer;
+    letter-spacing:0.04em; transition:all .2s; cursor:pointer; background:transparent;
   }
   .nav-cta:hover{background:var(--amber); color:#070a0f;}
 
-  @media (max-width:820px){.navlinks{display:none;}}
+  /* Mobile menu button */
+  .mobile-menu-toggle{
+    display:none; background:none; border:1px solid var(--border-light);
+    color:var(--text); padding:6px 12px; font-family:var(--mono); font-size:12px; cursor:pointer;
+  }
+  .mobile-drawer{
+    display:none; flex-direction:column; gap:14px; padding:20px 32px;
+    background:var(--panel); border-bottom:1px solid var(--border); font-family:var(--mono); font-size:13px;
+  }
+  .mobile-drawer.active{display:flex;}
 
-  /* Ticker */
+  @media (max-width:860px){
+    .navlinks{display:none;}
+    .mobile-menu-toggle{display:block;}
+  }
+
+  /* Ticker Bar */
   .ticker-bar{
     background:var(--panel);
     border-bottom:1px solid var(--border);
@@ -95,7 +109,7 @@
     100%{transform:translateX(-50%);}
   }
 
-  /* Hero */
+  /* Hero Section */
   .hero{
     position:relative; padding:80px 0 70px;
     border-bottom:1px solid var(--border); overflow:hidden;
@@ -121,14 +135,14 @@
     font-family:var(--mono); font-size:13px; font-weight:500;
     background:var(--amber); color:#070a0f; border:1px solid var(--amber);
     padding:12px 22px; letter-spacing:0.03em; cursor:pointer;
-    transition:transform .15s, box-shadow .2s;
+    transition:transform .15s, box-shadow .2s; display:inline-block; text-align:center;
   }
   .btn-primary:hover{transform:translateY(-1px); box-shadow:0 6px 20px rgba(255,182,39,0.25);}
   .btn-ghost{
     font-family:var(--mono); font-size:13px; font-weight:500;
     background:transparent; color:var(--text); border:1px solid var(--border-light);
     padding:12px 22px; letter-spacing:0.03em; cursor:pointer;
-    transition:border-color .2s, color .2s;
+    transition:border-color .2s, color .2s; display:inline-block; text-align:center;
   }
   .btn-ghost:hover{border-color:var(--cyan); color:var(--cyan);}
 
@@ -151,8 +165,10 @@
   .orbit-svg{width:100%; height:100%; max-width:400px;}
   .orbit-ring{fill:none; stroke:var(--border-light); stroke-width:1;}
   .orbit-ring.active{stroke:var(--amber-dim); stroke-dasharray:4 4;}
-  .sat{fill:var(--amber); transition:all .3s;}
+  .sat{fill:var(--amber); transition:all .3s; cursor:pointer;}
+  .sat:hover{r:7; fill:#ffffff; filter:drop-shadow(0 0 8px var(--amber));}
   .sat.cyan{fill:var(--cyan);}
+  .sat.cyan:hover{fill:#ffffff; filter:drop-shadow(0 0 8px var(--cyan));}
   .orbit-group{transform-origin:200px 200px;}
   .orbit-group.r1{animation:spin 20s linear infinite;}
   .orbit-group.r2{animation:spin 32s linear infinite reverse;}
@@ -161,7 +177,7 @@
   .orbit-center-label{font-family:var(--mono); font-size:11px; fill:var(--text); letter-spacing:0.1em;}
   .orbit-sub-label{font-family:var(--mono); font-size:8.5px; fill:var(--amber); letter-spacing:0.08em;}
 
-  /* Sections */
+  /* Section Commons */
   .section{padding:80px 0; border-bottom:1px solid var(--border);}
   .section-head{margin-bottom:44px; max-width:680px;}
   .section-head .eyebrow{margin-bottom:12px;}
@@ -171,13 +187,13 @@
   }
   .section-head p{color:var(--muted); font-size:15.5px;}
 
-  /* Gap */
+  /* Gap Section */
   .gap-toggle-bar{display:flex; justify-content:center; gap:12px; margin-bottom:32px; font-family:var(--mono); font-size:12px;}
   .gap-btn{padding:8px 16px; border:1px solid var(--border-light); background:var(--panel); color:var(--muted); cursor:pointer; transition:all .2s;}
   .gap-btn.active{border-color:var(--amber); color:var(--amber); background:rgba(255,182,39,0.08);}
   
   .gap-visualizer{
-    display:grid; grid-template-columns:1fr 120px 1fr; align-items:center; gap:20px;
+    display:grid; grid-template-columns:1fr 140px 1fr; align-items:center; gap:20px;
     background:var(--panel); border:1px solid var(--border); padding:36px;
   }
   @media (max-width:760px){
@@ -193,7 +209,7 @@
   }
   .gap-line{width:100%; height:1px; background:linear-gradient(90deg,transparent,var(--amber),transparent);}
 
-  /* Audiences */
+  /* Audiences Section */
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:22px;}
   @media (max-width:900px){.grid-3{grid-template-columns:1fr;}}
   .card-term{
@@ -218,7 +234,31 @@
     padding:3px 8px;
   }
 
-  /* Ontology Visualizer */
+  /* Space Intelligence Section */
+  .intel-toolbar{display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:24px;}
+  .intel-tabs{display:flex; gap:8px; flex-wrap:wrap;}
+  .intel-tab{font-family:var(--mono); font-size:11.5px; padding:8px 14px; border:1px solid var(--border-light); background:var(--panel); color:var(--muted); cursor:pointer; transition:all .2s;}
+  .intel-tab.active, .intel-tab:hover{border-color:var(--amber); color:var(--amber); background:rgba(255,182,39,0.06);}
+  .intel-status{font-family:var(--mono); font-size:11px; color:var(--cyan);}
+  .intel-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+  @media(max-width:980px){.intel-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:640px){.intel-grid{grid-template-columns:1fr;}}
+  
+  .intel-card{
+    background:var(--panel); border:1px solid var(--border); padding:22px;
+    display:flex; flex-direction:column; justify-content:space-between; min-height:245px; transition:all .2s; cursor:pointer;
+  }
+  .intel-card:hover{border-color:var(--border-light); transform:translateY(-2px); background:var(--panel-hover);}
+  .intel-meta{display:flex; justify-content:space-between; gap:12px; font-family:var(--mono); font-size:10px; color:var(--muted); margin-bottom:14px; text-transform:uppercase; letter-spacing:.04em;}
+  .intel-source{color:var(--cyan);}
+  .intel-card h3{font-family:var(--display); font-size:18px; line-height:1.25; margin-bottom:10px; color:var(--text);}
+  .intel-card p{font-size:13.5px; color:var(--muted); margin-bottom:20px; flex:1; line-height:1.5;}
+  .intel-link{font-family:var(--mono); font-size:11.5px; color:var(--amber); display:inline-flex; align-items:center; gap:4px;}
+  .intel-empty{grid-column:1/-1; border:1px dashed var(--border-light); padding:34px; text-align:center; color:var(--muted); font-family:var(--mono); font-size:12px;}
+  .source-strip{display:flex; gap:10px; flex-wrap:wrap; margin-top:22px;}
+  .source-pill{font-family:var(--mono); font-size:10.5px; color:var(--muted); border:1px solid var(--border); padding:5px 9px; background:rgba(255,255,255,0.02);}
+
+  /* Interactive Ontology Graph Visualizer */
   .ontology-container{
     background:var(--panel); border:1px solid var(--border);
     display:grid; grid-template-columns:1.3fr 0.7fr; gap:0; min-height:480px; overflow:hidden;
@@ -229,12 +269,13 @@
     padding:20px; display:flex; align-items:center; justify-content:center;
   }
   .ontology-svg{width:100%; height:100%; max-height:440px;}
-  .node-circle{cursor:pointer; transition:all .3s;}
-  .node-circle:hover{r:24; filter:drop-shadow(0 0 10px var(--amber));}
-  .node-text{font-family:var(--mono); font-size:11px; fill:var(--text); pointer-events:none;}
+  .node-group{cursor:pointer;}
+  .node-circle{transition:all .3s;}
+  .node-group:hover .node-circle{r:24; filter:drop-shadow(0 0 10px var(--amber));}
+  .node-text{font-family:var(--mono); font-size:11px; fill:var(--text); pointer-events:none; font-weight:600;}
   .node-sub{font-family:var(--mono); font-size:9px; fill:var(--muted); pointer-events:none;}
-  .edge-line{stroke:var(--border-light); stroke-width:1.5; stroke-dasharray:4 2;}
-  .edge-line.active{stroke:var(--amber); stroke-width:2; stroke-dasharray:none;}
+  .edge-line{stroke:var(--border-light); stroke-width:1.5; stroke-dasharray:4 2; transition:all .3s;}
+  .edge-line.active{stroke:var(--amber); stroke-width:2.5; stroke-dasharray:none; filter:drop-shadow(0 0 6px var(--amber));}
   
   .ontology-inspector{padding:28px 24px; display:flex; flex-direction:column; justify-content:space-between;}
   .inspector-header{
@@ -316,18 +357,18 @@
     border:1px solid rgba(76,224,198,0.4); background:rgba(76,224,198,0.06); padding:14px; margin-top:14px;
   }
 
-  /* Modal */
+  /* Modal Backdrop & Box */
   .modal-backdrop{
-    position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8);
-    backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px;
+    position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85);
+    backdrop-filter:blur(8px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px;
   }
   .modal-box{
-    background:var(--panel); border:1px solid var(--border-light); max-width:540px; width:100%;
-    padding:32px; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.5);
+    background:var(--panel); border:1px solid var(--border-light); max-width:560px; width:100%;
+    padding:32px; position:relative; box-shadow:0 20px 40px rgba(0,0,0,0.6);
   }
   .modal-close{
     position:absolute; top:16px; right:16px; background:none; border:none; color:var(--muted);
-    font-family:var(--mono); font-size:18px; cursor:pointer;
+    font-family:var(--mono); font-size:22px; cursor:pointer; line-height:1;
   }
   .modal-close:hover{color:var(--text);}
 
@@ -340,22 +381,32 @@
 </head>
 <body>
 
-<!-- Topbar -->
+<!-- Topbar Navigation -->
 <div class="topbar">
   <div class="nav">
     <div class="logo">
       <span class="dot"></span>COSMOHUB
-      <span class="badge">STATION F CANDIDATE</span>
+      <span class="badge">BUILDING IN PUBLIC</span>
     </div>
     <div class="navlinks">
       <a href="#gap">The Gap</a>
+      <a href="#intelligence">Space Intelligence</a>
       <a href="#ontology">Ontology Graph</a>
       <a href="#board">Track Board</a>
       <a href="#roadmap">Roadmap</a>
     </div>
     <div class="nav-right">
-      <a class="nav-cta" href="#access">Station F Access</a>
+      <a class="nav-cta" href="#access">Join Early Access</a>
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu">MENU ☰</button>
     </div>
+  </div>
+  <div class="mobile-drawer" id="mobileDrawer">
+    <a href="#gap" onclick="toggleMobileMenu()">The Gap</a>
+    <a href="#intelligence" onclick="toggleMobileMenu()">Space Intelligence</a>
+    <a href="#ontology" onclick="toggleMobileMenu()">Ontology Graph</a>
+    <a href="#board" onclick="toggleMobileMenu()">Track Board</a>
+    <a href="#roadmap" onclick="toggleMobileMenu()">Roadmap</a>
+    <a href="#access" style="color:var(--amber);" onclick="toggleMobileMenu()">Join Early Access</a>
   </div>
   <div class="ticker-bar">
     <div class="ticker-track" id="tickerTrack"></div>
@@ -375,23 +426,22 @@
         <a class="btn-primary" href="#access">Request Early Access</a>
         <a class="btn-ghost" href="#ontology">Explore Ontology Graph</a>
       </div>
-
       <div class="metrics-strip">
         <div class="met-item">
           <div class="met-label">Signal Clock</div>
           <div class="met-val cyan" id="utcClock">--:--:--</div>
         </div>
         <div class="met-item">
-          <div class="met-label">Nodes Tracked</div>
-          <div class="met-val amber">1,420+</div>
+          <div class="met-label">Product Stage</div>
+          <div class="met-val amber">Prototype</div>
         </div>
         <div class="met-item">
-          <div class="met-label">Active Fellowships</div>
-          <div class="met-val">84 Window Open</div>
+          <div class="met-label">Current Focus</div>
+          <div class="met-val" style="font-size:14px; line-height:22px;">Discovery + Learning</div>
         </div>
         <div class="met-item">
-          <div class="met-label">Architecture</div>
-          <div class="met-val" style="font-size:14px; line-height:22px;">Gotham-Class Graph</div>
+          <div class="met-label">Core Model</div>
+          <div class="met-val" style="font-size:14px; line-height:22px;">Knowledge Graph</div>
         </div>
       </div>
     </div>
@@ -405,10 +455,10 @@
         <text class="orbit-center-label" x="200" y="196" text-anchor="middle">COSMOHUB</text>
         <text class="orbit-sub-label" x="200" y="212" text-anchor="middle">ONTOLOGY NEXUS</text>
 
-        <g class="orbit-group r1"><circle class="sat" cx="265" cy="200" r="5"></circle></g>
-        <g class="orbit-group r2"><circle class="sat cyan" cx="325" cy="200" r="5.5"></circle></g>
-        <g class="orbit-group r3"><circle class="sat" cx="380" cy="200" r="4"></circle></g>
-        <g class="orbit-group r2" style="animation-delay:-10s;"><circle class="sat cyan" cx="75" cy="200" r="4.5"></circle></g>
+        <g class="orbit-group r1"><circle class="sat" cx="265" cy="200" r="5" title="SATCOM Node"></circle></g>
+        <g class="orbit-group r2"><circle class="sat cyan" cx="325" cy="200" r="5.5" title="GNC Node"></circle></g>
+        <g class="orbit-group r3"><circle class="sat" cx="380" cy="200" r="4" title="Propulsion Node"></circle></g>
+        <g class="orbit-group r2" style="animation-delay:-10s;"><circle class="sat cyan" cx="75" cy="200" r="4.5" title="Fellowship Node"></circle></g>
       </svg>
     </div>
   </div>
@@ -424,12 +474,10 @@
         Space technology and satellite communications are advancing exponentially — yet entry paths remain scattered across obscure forums, disconnected PDFs, and informal networks.
       </p>
     </div>
-
     <div class="gap-toggle-bar">
-      <button class="gap-btn active" onclick="setGapView('current')">Current Siloed Ecosystem</button>
-      <button class="gap-btn" onclick="setGapView('cosmohub')">CosmoHub Signal Graph</button>
+      <button class="gap-btn active" id="btnGapCurrent" onclick="setGapView('current')">Current Siloed Ecosystem</button>
+      <button class="gap-btn" id="btnGapCosmo" onclick="setGapView('cosmohub')">CosmoHub Signal Graph</button>
     </div>
-
     <div class="gap-visualizer" id="gapVisualizer">
       <div class="gap-card">
         <h4>Institutes &amp; Universities</h4>
@@ -447,7 +495,7 @@
   </div>
 </section>
 
-<!-- Audiences Section -->
+<!-- Target Audience Segments -->
 <section class="section" id="audiences">
   <div class="wrap">
     <div class="section-head">
@@ -468,7 +516,6 @@
           <div class="term-tags"><span>Rocket Mechanics</span><span>Mission Trackers</span><span>Build Challenges</span></div>
         </div>
       </div>
-
       <div class="card-term">
         <div>
           <div class="term-head"><span>STAGE / 02</span><span class="code">COHORTS</span></div>
@@ -481,7 +528,6 @@
           <div class="term-tags"><span>Industry Courses</span><span>Peer Cohorts</span><span>Verified Portfolios</span></div>
         </div>
       </div>
-
       <div class="card-term">
         <div>
           <div class="term-head"><span>STAGE / 03</span><span class="code">RESEARCH INDEX</span></div>
@@ -498,53 +544,77 @@
   </div>
 </section>
 
+<!-- Space Intelligence Section -->
+<section class="section" id="intelligence">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Space Intelligence</div>
+      <h2>One signal layer for space news and research.</h2>
+      <p>
+        A prototype intelligence feed designed to bring together trusted space-sector updates,
+        university research, papers, missions, and institutional announcements into a single queryable stream.
+      </p>
+    </div>
+    <div class="intel-toolbar">
+      <div class="intel-tabs">
+        <button class="intel-tab active" onclick="filterIntel('all', this)">ALL SIGNALS</button>
+        <button class="intel-tab" onclick="filterIntel('news', this)">SPACE NEWS</button>
+        <button class="intel-tab" onclick="filterIntel('research', this)">RESEARCH &amp; ACADEMIA</button>
+      </div>
+      <div class="intel-status" id="intelStatus">PROTOTYPE FEED · 6 ACTIVE SIGNALS</div>
+    </div>
+    <div class="intel-grid" id="intelGrid"></div>
+    <div class="source-strip">
+      <span class="source-pill">PLANNED: SPACE AGENCIES</span>
+      <span class="source-pill">PLANNED: UNIVERSITY LABS</span>
+      <span class="source-pill">PLANNED: RESEARCH FEEDS</span>
+      <span class="source-pill">PLANNED: MISSION UPDATES</span>
+    </div>
+  </div>
+</section>
+
 <!-- Interactive Ontology Graph Visualizer -->
 <section class="section" id="ontology">
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">The Core Engine</div>
       <h2>An Ontology-First Knowledge Graph.</h2>
-      <p>Click on any entity in our Gotham-class space graph to inspect its schema and real-time linkages.</p>
+      <p>Explore a prototype knowledge graph showing how people, institutions, opportunities, learning tracks, and missions are connected in one discoverable system.</p>
     </div>
-
     <div class="ontology-container">
       <div class="ontology-canvas-wrap">
         <svg class="ontology-svg" viewBox="0 0 500 400" id="ontologySvg">
-          <!-- Edges -->
-          <line class="edge-line active" x1="250" y1="200" x2="100" y2="100" id="e1"></line>
-          <line class="edge-line active" x1="250" y1="200" x2="400" y2="100" id="e2"></line>
-          <line class="edge-line" x1="250" y1="200" x2="100" y2="300" id="e3"></line>
-          <line class="edge-line" x1="250" y1="200" x2="400" y2="300" id="e4"></line>
-          <line class="edge-line" x1="100" y1="100" x2="400" y2="100" id="e5"></line>
+          <!-- Relational Edges -->
+          <line class="edge-line active" x1="250" y1="200" x2="100" y2="100" id="edge-person-institute"></line>
+          <line class="edge-line active" x1="250" y1="200" x2="400" y2="100" id="edge-person-fellowship"></line>
+          <line class="edge-line active" x1="250" y1="200" x2="100" y2="300" id="edge-person-track"></line>
+          <line class="edge-line" x1="250" y1="200" x2="400" y2="300" id="edge-person-mission"></line>
+          <line class="edge-line" x1="100" y1="100" x2="400" y2="100" id="edge-institute-fellowship"></line>
 
           <!-- Central Node: Person -->
-          <g transform="translate(250,200)" onclick="selectNode('Person')">
-            <circle class="node-circle" r="22" fill="#ffb627" stroke="#ffffff" stroke-width="2"></circle>
+          <g class="node-group" transform="translate(250,200)" onclick="selectNode('Person')">
+            <circle class="node-circle" id="node-Person" r="22" fill="#ffb627" stroke="#ffffff" stroke-width="2"></circle>
             <text class="node-text" y="34" text-anchor="middle">PERSON</text>
             <text class="node-sub" y="46" text-anchor="middle">Talent / Candidate</text>
           </g>
-
           <!-- Node: Institute -->
-          <g transform="translate(100,100)" onclick="selectNode('Institute')">
-            <circle class="node-circle" r="18" fill="#4ce0c6" stroke="#ffffff" stroke-width="1.5"></circle>
+          <g class="node-group" transform="translate(100,100)" onclick="selectNode('Institute')">
+            <circle class="node-circle" id="node-Institute" r="18" fill="#4ce0c6" stroke="#ffffff" stroke-width="1.5"></circle>
             <text class="node-text" y="28" text-anchor="middle">INSTITUTE</text>
           </g>
-
           <!-- Node: Fellowship -->
-          <g transform="translate(400,100)" onclick="selectNode('Fellowship')">
-            <circle class="node-circle" r="18" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5"></circle>
+          <g class="node-group" transform="translate(400,100)" onclick="selectNode('Fellowship')">
+            <circle class="node-circle" id="node-Fellowship" r="18" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5"></circle>
             <text class="node-text" y="28" text-anchor="middle">FELLOWSHIP</text>
           </g>
-
           <!-- Node: Track -->
-          <g transform="translate(100,300)" onclick="selectNode('Track')">
-            <circle class="node-circle" r="18" fill="#141a27" stroke="#ffb627" stroke-width="2"></circle>
+          <g class="node-group" transform="translate(100,300)" onclick="selectNode('Track')">
+            <circle class="node-circle" id="node-Track" r="18" fill="#141a27" stroke="#ffb627" stroke-width="2"></circle>
             <text class="node-text" y="28" text-anchor="middle">TRACK</text>
           </g>
-
           <!-- Node: Mission -->
-          <g transform="translate(400,300)" onclick="selectNode('Mission')">
-            <circle class="node-circle" r="18" fill="#141a27" stroke="#4ce0c6" stroke-width="2"></circle>
+          <g class="node-group" transform="translate(400,300)" onclick="selectNode('Mission')">
+            <circle class="node-circle" id="node-Mission" r="18" fill="#141a27" stroke="#4ce0c6" stroke-width="2"></circle>
             <text class="node-text" y="28" text-anchor="middle">MISSION</text>
           </g>
         </svg>
@@ -559,7 +629,6 @@
           </div>
           <div class="inspector-title" id="inspTitle">PERSON</div>
           <div class="inspector-desc" id="inspDesc">Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.</div>
-
           <table class="inspector-prop-table">
             <tr><td class="key">Primary Key</td><td class="val" id="inspPk">person_uuid</td></tr>
             <tr><td class="key">Connected Links</td><td class="val" id="inspLinks">studies (Track), applies (Fellowship)</td></tr>
@@ -581,16 +650,14 @@
     <div class="section-head">
       <div class="eyebrow">The Board</div>
       <h2>Domain Tracks &amp; Signal Metrics.</h2>
-      <p>Read like a market terminal — live track intensity metrics across key space tech domains.</p>
+      <p>A prototype view of the technical domains CosmoHub organizes into structured discovery and learning tracks.</p>
     </div>
-
     <div class="board-filter">
-      <button class="filter-chip active" onclick="filterBoard('all')">ALL TRACKS</button>
-      <button class="filter-chip" onclick="filterBoard('comms')">COMMS &amp; RF</button>
-      <button class="filter-chip" onclick="filterBoard('systems')">SYSTEMS &amp; GNC</button>
-      <button class="filter-chip" onclick="filterBoard('policy')">POLICY &amp; OPS</button>
+      <button class="filter-chip active" onclick="filterBoard('all', this)">ALL TRACKS</button>
+      <button class="filter-chip" onclick="filterBoard('comms', this)">COMMS &amp; RF</button>
+      <button class="filter-chip" onclick="filterBoard('systems', this)">SYSTEMS &amp; GNC</button>
+      <button class="filter-chip" onclick="filterBoard('policy', this)">POLICY &amp; OPS</button>
     </div>
-
     <div class="index-grid" id="indexGrid"></div>
   </div>
 </section>
@@ -600,57 +667,53 @@
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow">Execution Strategy</div>
-      <h2>Phased 10-Year Development Plan.</h2>
-      <p>Scaling from initial talent verification to global space asset matching.</p>
+      <h2>From focused prototype to connected ecosystem.</h2>
+      <p>A staged product direction: validate the discovery problem first, then build the data and institutional layers that make the network useful.</p>
     </div>
-
     <div class="roadmap-grid">
       <div class="phase-card">
-        <div class="phase-num">PHASE 01 // YR 1-2</div>
+        <div class="phase-num">PHASE 01 // NOW</div>
         <h3>Signal &amp; Talent Graph</h3>
-        <p>Deploy initial learning tracks in SATCOM and GNC. Establish ontology model and onboard first 5,000 students.</p>
+        <p>Validate the core problem, launch a focused prototype, and test whether learners and early-career talent use a structured space opportunity graph.</p>
         <ul class="phase-ul">
-          <li>Launch Bloomberg-style terminal UI</li>
-          <li>Integrate UTC telemetry feeds</li>
-          <li>Release Station F alpha</li>
+          <li>Launch the public prototype</li>
+          <li>Interview learners and researchers</li>
+          <li>Validate the first high-value use cases</li>
         </ul>
       </div>
-
       <div class="phase-card">
-        <div class="phase-num">PHASE 02 // YR 3-5</div>
+        <div class="phase-num">PHASE 02 // NEXT</div>
         <h3>Institutional Mesh</h3>
-        <p>Partner directly with space agencies, research labs, and private space firms for direct fellowship matching.</p>
+        <p>Build structured opportunity data and begin working with universities, labs, communities, and space organizations where there is clear mutual value.</p>
         <ul class="phase-ul">
-          <li>Automated candidate graph screening</li>
-          <li>Verified project credentials</li>
-          <li>50+ Research Institute nodes</li>
+          <li>Structured opportunity discovery</li>
+          <li>Project and skill profiles</li>
+          <li>Early institutional pilots</li>
         </ul>
       </div>
-
       <div class="phase-card">
-        <div class="phase-num">PHASE 03 // YR 6-10</div>
+        <div class="phase-num">PHASE 03 // VISION</div>
         <h3>Autonomous Space Terminal</h3>
-        <p>The definitive operating system connecting space capital, institutional missions, and human expertise globally.</p>
+        <p>Evolve into an intelligence layer that helps people navigate the space ecosystem and helps organizations discover relevant knowledge and talent.</p>
         <ul class="phase-ul">
-          <li>Global payload match engine</li>
-          <li>Real-time orbital project funding</li>
-          <li>Autonomous talent routing</li>
+          <li>Cross-ecosystem knowledge graph</li>
+          <li>Research and talent matching</li>
+          <li>Data-driven ecosystem intelligence</li>
         </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Station F Access & Evaluator Form -->
+<!-- Early Access Form -->
 <section class="section" id="access">
   <div class="wrap">
     <div class="cta-panel">
       <div>
-        <div class="eyebrow">Station F Application</div>
-        <h2>Request Access to CosmoHub.</h2>
-        <p>We are deploying the alpha terminal and establishing institutional research cohorts. Share your details to connect with our team.</p>
+        <div class="eyebrow">Early Access</div>
+        <h2>Help shape the first version of CosmoHub.</h2>
+        <p>CosmoHub is currently an early-stage prototype. If you are a student, engineer, researcher, educator, institution, or potential collaborator, share your details and tell us where you fit.</p>
       </div>
-
       <div>
         <form id="accessForm" onsubmit="handleForm(event)">
           <div class="form-row">
@@ -666,16 +729,18 @@
               <label for="role">Primary Role / Stakeholder</label>
               <select id="role" required>
                 <option value="" disabled selected>Select option</option>
-                <option value="stationf">Station F Evaluator / Investor</option>
-                <option value="student">Student / Engineer</option>
-                <option value="fellow">Research Fellow</option>
-                <option value="institute">Space Institute / University Rep</option>
+                <option value="investor">Investor / Accelerator / Ecosystem Partner</option>
+                <option value="student">Student / Early-Career Engineer</option>
+                <option value="professional">Space Professional</option>
+                <option value="fellow">Researcher / Research Fellow</option>
+                <option value="institute">University / Research Institution</option>
+                <option value="community">Space Community / Educator</option>
               </select>
             </div>
-            <button type="submit" class="submit-btn">SUBMIT TELEMETRY</button>
+            <button type="submit" class="submit-btn">JOIN EARLY ACCESS</button>
           </div>
-          <div class="form-note">Encrypted transmission. Immediate confirmation provided.</div>
-          <div class="form-success" id="formSuccess">✓ Access request logged to CosmoHub telemetry database.</div>
+          <div class="form-note">Prototype form — immediate confirmation provided.</div>
+          <div class="form-success" id="formSuccess">✓ Thanks — your interest has been recorded in this prototype.</div>
         </form>
       </div>
     </div>
@@ -689,39 +754,45 @@
       <span class="dot"></span>COSMOHUB TERMINAL
     </div>
     <div class="foot-meta">
-      Designed for Station F Candidate Evaluation · Built with Ontology-First Architecture
+      Early-stage prototype · Building the discovery layer for the space ecosystem
     </div>
   </div>
 </footer>
 
-<!-- Modal for Track Details -->
-<div class="modal-backdrop" id="trackModal">
+<!-- Modal Backdrop & Box -->
+<div class="modal-backdrop" id="trackModal" onclick="handleBackdropClick(event)">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close modal">×</button>
     <div class="eyebrow" id="modalCode">SATCOM</div>
     <h2 id="modalTitle">Satellite Communications</h2>
-    <p id="modalDesc" style="color:var(--muted); font-size:14px; margin-bottom:20px;">Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.</p>
+    <p id="modalDesc" style="color:var(--muted); font-size:14px; margin-bottom:20px; line-height:1.5;">Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.</p>
     <div style="background:var(--bg); border:1px solid var(--border); padding:16px; font-family:var(--mono); font-size:12px; margin-bottom:20px;">
       <div style="color:var(--amber); margin-bottom:6px;">SIGNAL METRICS</div>
-      <div>Active Research Fellowships: <span style="color:var(--cyan);">14 Seats</span></div>
-      <div>Industry Demand Index: <span style="color:var(--cyan);">HIGH (94.2)</span></div>
+      <div>Prototype Track Status: <span style="color:var(--cyan);" id="modalParam1">Exploration</span></div>
+      <div>Planned Content: <span style="color:var(--cyan);" id="modalParam2">Curriculum + opportunities + projects</span></div>
     </div>
     <button class="btn-primary" style="width:100%;" onclick="closeModal()">CLOSE PREVIEW</button>
   </div>
 </div>
 
 <script>
+  // Mobile drawer toggle
+  function toggleMobileMenu(){
+    document.getElementById('mobileDrawer').classList.toggle('active');
+  }
+
+  // Ticker bar animation content
   const tickerItems = [
-    { t: 'SATCOM TRACK', s: 'signal: rising', cls: 'up', arrow: '▲' },
-    { t: 'GNC COHORT', s: '4 fellowship seats opening', cls: 'up', arrow: '▲' },
-    { t: 'ISRO RESEARCH FELLOWSHIP', s: 'window closing in 48h', cls: 'down', arrow: '▼' },
-    { t: 'PROPULSION MODULE', s: 'cold-gas thruster lab active', cls: '', arrow: '' },
-    { t: 'SPACE LAW TRACK', s: 'signal: rising', cls: 'up', arrow: '▲' },
-    { t: 'RF GROUND SYSTEMS', s: 'cohort beta ready', cls: 'up', arrow: '▲' },
-    { t: 'ONTOLOGY GRAPH', s: '1,420 nodes linked', cls: 'up', arrow: '▲' }
+    { t: 'COSMOHUB', s: 'prototype live', cls: 'up', arrow: '▲' },
+    { t: 'SATCOM', s: 'domain map active', cls: 'up', arrow: '▲' },
+    { t: 'GNC', s: 'learning path concept', cls: '', arrow: '' },
+    { t: 'RESEARCH OPPORTUNITIES', s: 'discovery layer active', cls: 'up', arrow: '▲' },
+    { t: 'SPACE LAW', s: 'policy track added', cls: '', arrow: '' },
+    { t: 'KNOWLEDGE GRAPH', s: '5 core nodes linked', cls: 'up', arrow: '▲' }
   ];
   function renderTicker(){
     const track = document.getElementById('tickerTrack');
+    if(!track) return;
     const html = tickerItems.map(i =>
       `<span><b>${i.t}</b> ${i.s} ${i.arrow ? `<span class="${i.cls}">${i.arrow}</span>` : ''}</span>`
     ).join('');
@@ -729,8 +800,10 @@
   }
   renderTicker();
 
+  // UTC Live Signal Clock
   function tickClock(){
     const el = document.getElementById('utcClock');
+    if(!el) return;
     const now = new Date();
     const hh = String(now.getUTCHours()).padStart(2,'0');
     const mm = String(now.getUTCMinutes()).padStart(2,'0');
@@ -739,28 +812,29 @@
   }
   tickClock(); setInterval(tickClock, 1000);
 
+  // The Gap Toggle View
   function setGapView(mode){
-    const btns = document.querySelectorAll('.gap-btn');
-    btns.forEach(b => b.classList.remove('active'));
-    const vis = document.getElementById('gapVisualizer');
+    const btnCurr = document.getElementById('btnGapCurrent');
+    const btnCosmo = document.getElementById('btnGapCosmo');
     const arrowText = document.getElementById('gapArrowText');
     if(mode === 'current'){
-      btns[0].classList.add('active');
+      btnCurr.classList.add('active'); btnCosmo.classList.remove('active');
       arrowText.textContent = 'NO DIRECT SIGNAL';
       arrowText.style.color = 'var(--amber)';
     } else {
-      btns[1].classList.add('active');
+      btnCosmo.classList.add('active'); btnCurr.classList.remove('active');
       arrowText.textContent = 'COSMOHUB SIGNAL GRAPH';
       arrowText.style.color = 'var(--cyan)';
     }
   }
 
+  // Ontology Nodes Data & Dynamic Line Highlights
   const nodeData = {
-    'Person': { pk: 'person_uuid', title: 'PERSON (Talent Node)', desc: 'Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.', links: 'studies (Track), applies (Fellowship)', badge: 'TALENT_NODE' },
-    'Institute': { pk: 'institute_id', title: 'INSTITUTE (Academic / Lab)', desc: 'Space research institutes, university aerospace departments, and agencies providing academic fellowships and mission opportunities.', links: 'sponsors (Fellowship), operates (Mission)', badge: 'INSTITUTION_NODE' },
-    'Fellowship': { pk: 'fellowship_id', title: 'FELLOWSHIP (Opportunity)', desc: 'Funded research windows, lab seats, and grant positions offered directly by partner institutions.', links: 'offered_by (Institute), target (Track)', badge: 'OPPORTUNITY_NODE' },
-    'Track': { pk: 'track_code', title: 'TRACK (Curriculum / Skill)', desc: 'Structured domain path (SATCOM, GNC, PROP) mapping core skills required for space missions.', links: 'prepares_for (Fellowship), completed_by (Person)', badge: 'CURRICULUM_NODE' },
-    'Mission': { pk: 'mission_id', title: 'MISSION (Real Space Payload)', desc: 'Active satellite constellations, planetary probes, and experimental payloads seeking technical contributors.', links: 'managed_by (Institute), requires (Track)', badge: 'MISSION_NODE' }
+    'Person': { pk: 'person_uuid', title: 'PERSON (Talent Node)', desc: 'Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.', links: 'studies (Track), applies (Fellowship)', badge: 'TALENT_NODE', edges: ['edge-person-institute', 'edge-person-fellowship', 'edge-person-track'] },
+    'Institute': { pk: 'institute_id', title: 'INSTITUTE (Academic / Lab)', desc: 'Space research institutes, university departments, agencies, and organizations that publish research and opportunity information.', links: 'sponsors (Fellowship), operates (Mission)', badge: 'INSTITUTION_NODE', edges: ['edge-person-institute', 'edge-institute-fellowship'] },
+    'Fellowship': { pk: 'fellowship_id', title: 'FELLOWSHIP (Opportunity)', desc: 'Funded research windows, lab seats, and grant positions offered directly by partner institutions.', links: 'offered_by (Institute), target (Track)', badge: 'OPPORTUNITY_NODE', edges: ['edge-person-fellowship', 'edge-institute-fellowship'] },
+    'Track': { pk: 'track_code', title: 'TRACK (Curriculum / Skill)', desc: 'Structured domain path (SATCOM, GNC, PROP) mapping core skills required for space missions.', links: 'prepares_for (Fellowship), completed_by (Person)', badge: 'CURRICULUM_NODE', edges: ['edge-person-track'] },
+    'Mission': { pk: 'mission_id', title: 'MISSION (Real Space Payload)', desc: 'Space missions and projects represented as knowledge entities that link to technical domains and expertise.', links: 'managed_by (Institute), requires (Track)', badge: 'MISSION_NODE', edges: ['edge-person-mission'] }
   };
 
   function selectNode(type){
@@ -771,8 +845,16 @@
     document.getElementById('inspPk').textContent = data.pk;
     document.getElementById('inspLinks').textContent = data.links;
     document.getElementById('inspBadge').textContent = data.badge;
+
+    // Highlight connected SVG edges dynamically
+    document.querySelectorAll('.edge-line').forEach(line => line.classList.remove('active'));
+    data.edges.forEach(edgeId => {
+      const edge = document.getElementById(edgeId);
+      if(edge) edge.classList.add('active');
+    });
   }
 
+  // Board Domain Tracks Data
   const tracks = [
     { code: 'SATCOM', category: 'comms', name: 'Satellite Communications', signal: 'HIGH', path: 'M0,26 L14,20 L28,22 L42,12 L56,15 L70,6 L84,9 L98,2', color: 'var(--cyan)' },
     { code: 'GNC', category: 'systems', name: 'Guidance, Navigation & Control', signal: 'RISING', path: 'M0,20 L14,22 L28,16 L42,18 L56,10 L70,13 L84,7 L98,9', color: 'var(--amber)' },
@@ -786,9 +868,10 @@
 
   function renderBoard(filter = 'all'){
     const grid = document.getElementById('indexGrid');
+    if(!grid) return;
     const filtered = filter === 'all' ? tracks : tracks.filter(t => t.category === filter);
     grid.innerHTML = filtered.map(tr => `
-      <div class="idx-card" onclick="openModal('${tr.code}', '${tr.name}')">
+      <div class="idx-card" onclick="openModal('${tr.code}', '${tr.name}', 'Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.', 'Active Track', 'Curriculum + Projects')">
         <div class="idx-top">
           <span class="idx-code">${tr.code}</span>
           <span class="idx-signal ${tr.signal === 'HIGH' ? 'high' : 'rising'}">${tr.signal}</span>
@@ -802,22 +885,67 @@
   }
   renderBoard();
 
-  function filterBoard(cat){
-    const chips = document.querySelectorAll('.filter-chip');
-    chips.forEach(c => c.classList.remove('active'));
-    event.target.classList.add('active');
+  function filterBoard(cat, btnEl){
+    document.querySelectorAll('.board-filter .filter-chip').forEach(c => c.classList.remove('active'));
+    if(btnEl) btnEl.classList.add('active');
     renderBoard(cat);
   }
 
-  function openModal(code, name){
+  // Space Intelligence Prototype Feed
+  const sampleIntelligence = [
+    {type:'news',source:'SPACE SECTOR',date:'LIVE-READY',title:'Mission and industry updates in one signal layer',summary:'CosmoHub aggregates trusted space announcements and mission updates into a structured, filterable feed.',url:''},
+    {type:'research',source:'UNIVERSITY RESEARCH',date:'LIVE-READY',title:'Research discovery beyond scattered department pages',summary:'Surfaces relevant research papers, laboratory updates, calls for collaboration, and institutional research activity.',url:''},
+    {type:'research',source:'KNOWLEDGE GRAPH',date:'PROTOTYPE',title:'Connect research to skills, institutions, missions, and people',summary:'Instead of presenting isolated headlines, CosmoHub maps each signal to entities and technical domains.',url:''},
+    {type:'news',source:'MISSION SIGNALS',date:'PROTOTYPE',title:'Follow developments by domain, not just chronology',summary:'Organize updates around SATCOM, GNC, propulsion, remote sensing, mission operations, and space policy.',url:''},
+    {type:'research',source:'OPPORTUNITY LAYER',date:'PLANNED',title:'Turn information into discoverable pathways',summary:'Research signals directly connect to learning tracks, fellowships, projects, and relevant organizations.',url:''},
+    {type:'news',source:'COSMOHUB',date:'BUILDING',title:'The terminal is becoming an intelligence product',summary:'This public prototype demonstrates the interface while the live data ingestion layer is developed.',url:''}
+  ];
+
+  function renderIntelligence(filter = 'all'){
+    const grid = document.getElementById('intelGrid');
+    if(!grid) return;
+    const items = filter === 'all' ? sampleIntelligence : sampleIntelligence.filter(x => x.type === filter);
+    if(!items.length){
+      grid.innerHTML = '<div class="intel-empty">NO SIGNALS AVAILABLE FOR THIS FILTER.</div>';
+      return;
+    }
+    grid.innerHTML = items.map(item => `
+      <article class="intel-card" onclick="openModal('${item.source}', '${item.title}', '${item.summary}', '${item.type.toUpperCase()}', '${item.date}')">
+        <div class="intel-meta"><span class="intel-source">${item.source}</span><span>${item.date}</span></div>
+        <h3>${item.title}</h3>
+        <p>${item.summary}</p>
+        <span class="intel-link">VIEW SIGNAL METRICS →</span>
+      </article>
+    `).join('');
+  }
+  renderIntelligence();
+
+  function filterIntel(cat, btnEl){
+    document.querySelectorAll('.intel-tab').forEach(b => b.classList.remove('active'));
+    if(btnEl) btnEl.classList.add('active');
+    renderIntelligence(cat);
+  }
+
+  // Modal logic with Backdrop & Keyboard support
+  function openModal(code, title, desc, p1 = 'Active', p2 = 'Curriculum & Research'){
     document.getElementById('modalCode').textContent = code;
-    document.getElementById('modalTitle').textContent = name;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('modalParam1').textContent = p1;
+    document.getElementById('modalParam2').textContent = p2;
     document.getElementById('trackModal').style.display = 'flex';
   }
   function closeModal(){
     document.getElementById('trackModal').style.display = 'none';
   }
+  function handleBackdropClick(e){
+    if(e.target.id === 'trackModal') closeModal();
+  }
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeModal();
+  });
 
+  // Form submit handler
   function handleForm(e){
     e.preventDefault();
     document.getElementById('formSuccess').style.display = 'block';
