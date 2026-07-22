@@ -3,8 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070a0f">
 <title>CosmoHub — The Terminal & Ontology for the Space Economy</title>
-<meta name="description" content="CosmoHub is the ontology-first intelligence platform connecting space research institutes, universities, and missions directly with talent — enthusiasts, students, and research fellows.">
+<meta name="description" content="CosmoHub is an ontology-first intelligence platform connecting space research institutes, universities, and missions directly with talent — enthusiasts, students, and research fellows.">
+
+<!-- Open Graph / Social Meta Tags -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="CosmoHub — The Terminal for the Space Economy">
+<meta property="og:description" content="An ontology-first intelligence platform matching space talent, research fellowships, and institutional missions.">
+<meta property="og:url" content="https://kantimohanthy.github.io/cosmohub/">
+<meta property="og:site_name" content="CosmoHub">
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CosmoHub — The Terminal for the Space Economy">
+<meta name="twitter:description" content="Connecting space research institutes, universities, and missions directly with space talent.">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -42,10 +56,21 @@
   button, input, select{font-family:inherit;}
   .wrap{max-width:1200px; margin:0 auto; padding:0 32px;}
 
-  /* Topbar & Navigation */
+  /* Accessibility & Focus Visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
+    outline:2px solid var(--cyan); outline-offset:3px;
+  }
+
+  /* No-JS Notice */
+  .noscript-banner{
+    background:var(--amber); color:#070a0f; font-family:var(--mono); font-size:12px;
+    font-weight:600; text-align:center; padding:10px 16px;
+  }
+
+  /* Topbar Navigation */
   .topbar{
     position:sticky; top:0; z-index:100;
-    background:rgba(7,10,15,0.92);
+    background:rgba(7,10,15,0.94);
     backdrop-filter:blur(12px);
     border-bottom:1px solid var(--border);
   }
@@ -73,7 +98,7 @@
   }
   .nav-cta:hover{background:var(--amber); color:#070a0f;}
 
-  /* Mobile menu button */
+  /* Mobile menu drawer */
   .mobile-menu-toggle{
     display:none; background:none; border:1px solid var(--border-light);
     color:var(--text); padding:6px 12px; font-family:var(--mono); font-size:12px; cursor:pointer;
@@ -372,6 +397,17 @@
   }
   .modal-close:hover{color:var(--text);}
 
+  /* Prefers Reduced Motion A11y */
+  @media (prefers-reduced-motion: reduce){
+    *, ::before, ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    .ticker-track, .orbit-group { animation: none !important; }
+  }
+
   /* Footer */
   footer{padding:40px 0; border-top:1px solid var(--border);}
   .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:20px;}
@@ -381,11 +417,17 @@
 </head>
 <body>
 
+<noscript>
+  <div class="noscript-banner">
+    Notice: JavaScript is disabled in your browser. Interactive visualizers and real-time feeds require JavaScript.
+  </div>
+</noscript>
+
 <!-- Topbar Navigation -->
-<div class="topbar">
-  <div class="nav">
+<header class="topbar">
+  <nav class="nav" aria-label="Main navigation">
     <div class="logo">
-      <span class="dot"></span>COSMOHUB
+      <span class="dot" aria-hidden="true"></span>COSMOHUB
       <span class="badge">BUILDING IN PUBLIC</span>
     </div>
     <div class="navlinks">
@@ -397,361 +439,368 @@
     </div>
     <div class="nav-right">
       <a class="nav-cta" href="#access">Join Early Access</a>
-      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu">MENU ☰</button>
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-expanded="false" aria-controls="mobileDrawer" aria-label="Toggle navigation menu">MENU ☰</button>
     </div>
-  </div>
+  </nav>
   <div class="mobile-drawer" id="mobileDrawer">
-    <a href="#gap" onclick="toggleMobileMenu()">The Gap</a>
-    <a href="#intelligence" onclick="toggleMobileMenu()">Space Intelligence</a>
-    <a href="#ontology" onclick="toggleMobileMenu()">Ontology Graph</a>
-    <a href="#board" onclick="toggleMobileMenu()">Track Board</a>
-    <a href="#roadmap" onclick="toggleMobileMenu()">Roadmap</a>
-    <a href="#access" style="color:var(--amber);" onclick="toggleMobileMenu()">Join Early Access</a>
+    <a href="#gap">The Gap</a>
+    <a href="#intelligence">Space Intelligence</a>
+    <a href="#ontology">Ontology Graph</a>
+    <a href="#board">Track Board</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#access" style="color:var(--amber);">Join Early Access</a>
   </div>
-  <div class="ticker-bar">
-    <div class="ticker-track" id="tickerTrack"></div>
+  <div class="ticker-bar" role="region" aria-label="Live signals ticker">
+    <div class="ticker-track" id="tickerTrack" aria-live="polite"></div>
   </div>
-</div>
+</header>
 
-<!-- Hero Section -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="eyebrow">The Ontology for the Space Economy</div>
-      <h1>Space has a market.<br>Now it has a <span class="accent">terminal</span>.</h1>
-      <p class="hero-sub">
-        CosmoHub is the <b>ontology-first intelligence platform</b> connecting space research institutes, universities, and missions directly with talent — <b>enthusiasts, students, and research fellows</b>.
-      </p>
-      <div class="hero-ctas">
-        <a class="btn-primary" href="#access">Request Early Access</a>
-        <a class="btn-ghost" href="#ontology">Explore Ontology Graph</a>
-      </div>
-      <div class="metrics-strip">
-        <div class="met-item">
-          <div class="met-label">Signal Clock</div>
-          <div class="met-val cyan" id="utcClock">--:--:--</div>
+<main>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">The Ontology for the Space Economy</div>
+        <h1>Space has a market.<br>Now it has a <span class="accent">terminal</span>.</h1>
+        <p class="hero-sub">
+          CosmoHub is the <b>ontology-first intelligence platform</b> connecting space research institutes, universities, and missions directly with talent — <b>enthusiasts, students, and research fellows</b>.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn-primary" href="#access">Request Early Access</a>
+          <a class="btn-ghost" href="#ontology">Explore Ontology Graph</a>
         </div>
-        <div class="met-item">
-          <div class="met-label">Product Stage</div>
-          <div class="met-val amber">Prototype</div>
-        </div>
-        <div class="met-item">
-          <div class="met-label">Current Focus</div>
-          <div class="met-val" style="font-size:14px; line-height:22px;">Discovery + Learning</div>
-        </div>
-        <div class="met-item">
-          <div class="met-label">Core Model</div>
-          <div class="met-val" style="font-size:14px; line-height:22px;">Knowledge Graph</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Orbital Graphic Canvas -->
-    <div class="orbit-wrap">
-      <svg class="orbit-svg" viewBox="0 0 400 400">
-        <circle class="orbit-ring" cx="200" cy="200" r="65"></circle>
-        <circle class="orbit-ring active" cx="200" cy="200" r="125"></circle>
-        <circle class="orbit-ring" cx="200" cy="200" r="180"></circle>
-        <text class="orbit-center-label" x="200" y="196" text-anchor="middle">COSMOHUB</text>
-        <text class="orbit-sub-label" x="200" y="212" text-anchor="middle">ONTOLOGY NEXUS</text>
-
-        <g class="orbit-group r1"><circle class="sat" cx="265" cy="200" r="5" title="SATCOM Node"></circle></g>
-        <g class="orbit-group r2"><circle class="sat cyan" cx="325" cy="200" r="5.5" title="GNC Node"></circle></g>
-        <g class="orbit-group r3"><circle class="sat" cx="380" cy="200" r="4" title="Propulsion Node"></circle></g>
-        <g class="orbit-group r2" style="animation-delay:-10s;"><circle class="sat cyan" cx="75" cy="200" r="4.5" title="Fellowship Node"></circle></g>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- The Gap Section -->
-<section class="section" id="gap">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">The Structural Dilemma</div>
-      <h2>Unrouted talent. Unfulfilled space missions.</h2>
-      <p>
-        Space technology and satellite communications are advancing exponentially — yet entry paths remain scattered across obscure forums, disconnected PDFs, and informal networks.
-      </p>
-    </div>
-    <div class="gap-toggle-bar">
-      <button class="gap-btn active" id="btnGapCurrent" onclick="setGapView('current')">Current Siloed Ecosystem</button>
-      <button class="gap-btn" id="btnGapCosmo" onclick="setGapView('cosmohub')">CosmoHub Signal Graph</button>
-    </div>
-    <div class="gap-visualizer" id="gapVisualizer">
-      <div class="gap-card">
-        <h4>Institutes &amp; Universities</h4>
-        <p>Holding research papers, active space missions, and fellowship seats — but lacking targeted talent visibility.</p>
-      </div>
-      <div class="gap-arrow">
-        <span id="gapArrowText">NO DIRECT SIGNAL</span>
-        <div class="gap-line"></div>
-      </div>
-      <div class="gap-card">
-        <h4>Space Talent &amp; Fellows</h4>
-        <p>High ambition and technical capability — but unable to discover institutional openings or prove skill alignment.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Target Audience Segments -->
-<section class="section" id="audiences">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Target Segments</div>
-      <h2>Three stages of the same space trajectory.</h2>
-      <p>CosmoHub nurtures early interest into verified institutional contribution.</p>
-    </div>
-    <div class="grid-3">
-      <div class="card-term">
-        <div>
-          <div class="term-head"><span>STAGE / 01</span><span class="code">LAUNCHPAD</span></div>
-          <div class="term-body">
-            <h3>Enthusiasts &amp; Kids</h3>
-            <p>Plain-language explainers, real-time satellite pass trackers, and rocket mechanics modules that transform passive interest into real technical foundations.</p>
+        <div class="metrics-strip">
+          <div class="met-item">
+            <div class="met-label">Signal Clock</div>
+            <div class="met-val cyan" id="utcClock">--:--:--</div>
+          </div>
+          <div class="met-item">
+            <div class="met-label">Product Stage</div>
+            <div class="met-val amber">Prototype</div>
+          </div>
+          <div class="met-item">
+            <div class="met-label">Current Focus</div>
+            <div class="met-val" style="font-size:14px; line-height:22px;">Discovery + Learning</div>
+          </div>
+          <div class="met-item">
+            <div class="met-label">Core Model</div>
+            <div class="met-val" style="font-size:14px; line-height:22px;">Knowledge Graph</div>
           </div>
         </div>
-        <div class="term-body" style="padding-top:0;">
-          <div class="term-tags"><span>Rocket Mechanics</span><span>Mission Trackers</span><span>Build Challenges</span></div>
-        </div>
       </div>
-      <div class="card-term">
-        <div>
-          <div class="term-head"><span>STAGE / 02</span><span class="code">COHORTS</span></div>
-          <div class="term-body">
-            <h3>Students &amp; Engineers</h3>
-            <p>Structured, industry-mapped tracks in SATCOM, GNC, propulsion, and space policy with peer cohorts and verifiable project portfolios.</p>
-          </div>
-        </div>
-        <div class="term-body" style="padding-top:0;">
-          <div class="term-tags"><span>Industry Courses</span><span>Peer Cohorts</span><span>Verified Portfolios</span></div>
-        </div>
-      </div>
-      <div class="card-term">
-        <div>
-          <div class="term-head"><span>STAGE / 03</span><span class="code">RESEARCH INDEX</span></div>
-          <div class="term-body">
-            <h3>Professionals &amp; Fellows</h3>
-            <p>Direct fellowship query engines, institutional matching, and verified skill graphs that allow research groups to screen and recruit candidates instantly.</p>
-          </div>
-        </div>
-        <div class="term-body" style="padding-top:0;">
-          <div class="term-tags"><span>Fellowship Alerts</span><span>Graph Screening</span><span>Institute Matching</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- Space Intelligence Section -->
-<section class="section" id="intelligence">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Space Intelligence</div>
-      <h2>One signal layer for space news and research.</h2>
-      <p>
-        A prototype intelligence feed designed to bring together trusted space-sector updates,
-        university research, papers, missions, and institutional announcements into a single queryable stream.
-      </p>
-    </div>
-    <div class="intel-toolbar">
-      <div class="intel-tabs">
-        <button class="intel-tab active" onclick="filterIntel('all', this)">ALL SIGNALS</button>
-        <button class="intel-tab" onclick="filterIntel('news', this)">SPACE NEWS</button>
-        <button class="intel-tab" onclick="filterIntel('research', this)">RESEARCH &amp; ACADEMIA</button>
-      </div>
-      <div class="intel-status" id="intelStatus">PROTOTYPE FEED · 6 ACTIVE SIGNALS</div>
-    </div>
-    <div class="intel-grid" id="intelGrid"></div>
-    <div class="source-strip">
-      <span class="source-pill">PLANNED: SPACE AGENCIES</span>
-      <span class="source-pill">PLANNED: UNIVERSITY LABS</span>
-      <span class="source-pill">PLANNED: RESEARCH FEEDS</span>
-      <span class="source-pill">PLANNED: MISSION UPDATES</span>
-    </div>
-  </div>
-</section>
+      <!-- Orbital Graphic Canvas -->
+      <div class="orbit-wrap">
+        <svg class="orbit-svg" viewBox="0 0 400 400" role="img" aria-labelledby="orbTitle orbDesc">
+          <title id="orbTitle">Orbital Mechanics Visualizer</title>
+          <desc id="orbDesc">Interactive animated rings showing satellites orbiting the CosmoHub nexus.</desc>
+          <circle class="orbit-ring" cx="200" cy="200" r="65"></circle>
+          <circle class="orbit-ring active" cx="200" cy="200" r="125"></circle>
+          <circle class="orbit-ring" cx="200" cy="200" r="180"></circle>
+          <text class="orbit-center-label" x="200" y="196" text-anchor="middle">COSMOHUB</text>
+          <text class="orbit-sub-label" x="200" y="212" text-anchor="middle">ONTOLOGY NEXUS</text>
 
-<!-- Interactive Ontology Graph Visualizer -->
-<section class="section" id="ontology">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">The Core Engine</div>
-      <h2>An Ontology-First Knowledge Graph.</h2>
-      <p>Explore a prototype knowledge graph showing how people, institutions, opportunities, learning tracks, and missions are connected in one discoverable system.</p>
-    </div>
-    <div class="ontology-container">
-      <div class="ontology-canvas-wrap">
-        <svg class="ontology-svg" viewBox="0 0 500 400" id="ontologySvg">
-          <!-- Relational Edges -->
-          <line class="edge-line active" x1="250" y1="200" x2="100" y2="100" id="edge-person-institute"></line>
-          <line class="edge-line active" x1="250" y1="200" x2="400" y2="100" id="edge-person-fellowship"></line>
-          <line class="edge-line active" x1="250" y1="200" x2="100" y2="300" id="edge-person-track"></line>
-          <line class="edge-line" x1="250" y1="200" x2="400" y2="300" id="edge-person-mission"></line>
-          <line class="edge-line" x1="100" y1="100" x2="400" y2="100" id="edge-institute-fellowship"></line>
-
-          <!-- Central Node: Person -->
-          <g class="node-group" transform="translate(250,200)" onclick="selectNode('Person')">
-            <circle class="node-circle" id="node-Person" r="22" fill="#ffb627" stroke="#ffffff" stroke-width="2"></circle>
-            <text class="node-text" y="34" text-anchor="middle">PERSON</text>
-            <text class="node-sub" y="46" text-anchor="middle">Talent / Candidate</text>
-          </g>
-          <!-- Node: Institute -->
-          <g class="node-group" transform="translate(100,100)" onclick="selectNode('Institute')">
-            <circle class="node-circle" id="node-Institute" r="18" fill="#4ce0c6" stroke="#ffffff" stroke-width="1.5"></circle>
-            <text class="node-text" y="28" text-anchor="middle">INSTITUTE</text>
-          </g>
-          <!-- Node: Fellowship -->
-          <g class="node-group" transform="translate(400,100)" onclick="selectNode('Fellowship')">
-            <circle class="node-circle" id="node-Fellowship" r="18" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5"></circle>
-            <text class="node-text" y="28" text-anchor="middle">FELLOWSHIP</text>
-          </g>
-          <!-- Node: Track -->
-          <g class="node-group" transform="translate(100,300)" onclick="selectNode('Track')">
-            <circle class="node-circle" id="node-Track" r="18" fill="#141a27" stroke="#ffb627" stroke-width="2"></circle>
-            <text class="node-text" y="28" text-anchor="middle">TRACK</text>
-          </g>
-          <!-- Node: Mission -->
-          <g class="node-group" transform="translate(400,300)" onclick="selectNode('Mission')">
-            <circle class="node-circle" id="node-Mission" r="18" fill="#141a27" stroke="#4ce0c6" stroke-width="2"></circle>
-            <text class="node-text" y="28" text-anchor="middle">MISSION</text>
-          </g>
+          <g class="orbit-group r1"><circle class="sat" cx="265" cy="200" r="5"></circle></g>
+          <g class="orbit-group r2"><circle class="sat cyan" cx="325" cy="200" r="5.5"></circle></g>
+          <g class="orbit-group r3"><circle class="sat" cx="380" cy="200" r="4"></circle></g>
+          <g class="orbit-group r2" style="animation-delay:-10s;"><circle class="sat cyan" cx="75" cy="200" r="4.5"></circle></g>
         </svg>
       </div>
+    </div>
+  </section>
 
-      <!-- Inspector Sidepanel -->
-      <div class="ontology-inspector" id="nodeInspector">
+  <!-- The Gap Section -->
+  <section class="section" id="gap">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">The Structural Dilemma</div>
+        <h2>Unrouted talent. Unfulfilled space missions.</h2>
+        <p>
+          Space technology and satellite communications are advancing exponentially — yet entry paths remain scattered across obscure forums, disconnected PDFs, and informal networks.
+        </p>
+      </div>
+      <div class="gap-toggle-bar">
+        <button class="gap-btn active" id="btnGapCurrent" data-gap="current">Current Siloed Ecosystem</button>
+        <button class="gap-btn" id="btnGapCosmo" data-gap="cosmohub">CosmoHub Signal Graph</button>
+      </div>
+      <div class="gap-visualizer" id="gapVisualizer">
+        <div class="gap-card">
+          <h4>Institutes &amp; Universities</h4>
+          <p>Holding research papers, active space missions, and fellowship seats — but lacking targeted talent visibility.</p>
+        </div>
+        <div class="gap-arrow">
+          <span id="gapArrowText">NO DIRECT SIGNAL</span>
+          <div class="gap-line" aria-hidden="true"></div>
+        </div>
+        <div class="gap-card">
+          <h4>Space Talent &amp; Fellows</h4>
+          <p>High ambition and technical capability — but unable to discover institutional openings or prove skill alignment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Target Audience Segments -->
+  <section class="section" id="audiences">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Target Segments</div>
+        <h2>Three stages of the same space trajectory.</h2>
+        <p>CosmoHub nurtures early interest into verified institutional contribution.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card-term">
+          <div>
+            <div class="term-head"><span>STAGE / 01</span><span class="code">LAUNCHPAD</span></div>
+            <div class="term-body">
+              <h3>Enthusiasts &amp; Kids</h3>
+              <p>Plain-language explainers, real-time satellite pass trackers, and rocket mechanics modules that transform passive interest into real technical foundations.</p>
+            </div>
+          </div>
+          <div class="term-body" style="padding-top:0;">
+            <div class="term-tags"><span>Rocket Mechanics</span><span>Mission Trackers</span><span>Build Challenges</span></div>
+          </div>
+        </div>
+        <div class="card-term">
+          <div>
+            <div class="term-head"><span>STAGE / 02</span><span class="code">COHORTS</span></div>
+            <div class="term-body">
+              <h3>Students &amp; Engineers</h3>
+              <p>Structured, industry-mapped tracks in SATCOM, GNC, propulsion, and space policy with peer cohorts and verifiable project portfolios.</p>
+            </div>
+          </div>
+          <div class="term-body" style="padding-top:0;">
+            <div class="term-tags"><span>Industry Courses</span><span>Peer Cohorts</span><span>Verified Portfolios</span></div>
+          </div>
+        </div>
+        <div class="card-term">
+          <div>
+            <div class="term-head"><span>STAGE / 03</span><span class="code">RESEARCH INDEX</span></div>
+            <div class="term-body">
+              <h3>Professionals &amp; Fellows</h3>
+              <p>Direct fellowship query engines, institutional matching, and verified skill graphs that allow research groups to screen and recruit candidates instantly.</p>
+            </div>
+          </div>
+          <div class="term-body" style="padding-top:0;">
+            <div class="term-tags"><span>Fellowship Alerts</span><span>Graph Screening</span><span>Institute Matching</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Space Intelligence Section -->
+  <section class="section" id="intelligence">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Space Intelligence</div>
+        <h2>One signal layer for space news and research.</h2>
+        <p>
+          A prototype intelligence feed designed to bring together trusted space-sector updates,
+          university research, papers, missions, and institutional announcements into a single queryable stream.
+        </p>
+      </div>
+      <div class="intel-toolbar">
+        <div class="intel-tabs">
+          <button class="intel-tab active" data-intel="all">ALL SIGNALS</button>
+          <button class="intel-tab" data-intel="news">SPACE NEWS</button>
+          <button class="intel-tab" data-intel="research">RESEARCH &amp; ACADEMIA</button>
+        </div>
+        <div class="intel-status" id="intelStatus">PROTOTYPE FEED · 6 ACTIVE SIGNALS</div>
+      </div>
+      <div class="intel-grid" id="intelGrid"></div>
+      <div class="source-strip">
+        <span class="source-pill">PLANNED: SPACE AGENCIES</span>
+        <span class="source-pill">PLANNED: UNIVERSITY LABS</span>
+        <span class="source-pill">PLANNED: RESEARCH FEEDS</span>
+        <span class="source-pill">PLANNED: MISSION UPDATES</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Ontology Graph Visualizer -->
+  <section class="section" id="ontology">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">The Core Engine</div>
+        <h2>An Ontology-First Knowledge Graph.</h2>
+        <p>Explore a prototype knowledge graph showing how people, institutions, opportunities, learning tracks, and missions are connected in one discoverable system.</p>
+      </div>
+      <div class="ontology-container">
+        <div class="ontology-canvas-wrap">
+          <svg class="ontology-svg" viewBox="0 0 500 400" role="img" aria-labelledby="ontTitle ontDesc">
+            <title id="ontTitle">Ontology Knowledge Graph Diagram</title>
+            <desc id="ontDesc">Interactive diagram showing Person, Institute, Fellowship, Track, and Mission nodes connected by relational graph links.</desc>
+
+            <!-- Relational Edges -->
+            <line class="edge-line active" x1="250" y1="200" x2="100" y2="100" id="edge-person-institute"></line>
+            <line class="edge-line active" x1="250" y1="200" x2="400" y2="100" id="edge-person-fellowship"></line>
+            <line class="edge-line active" x1="250" y1="200" x2="100" y2="300" id="edge-person-track"></line>
+            <line class="edge-line" x1="250" y1="200" x2="400" y2="300" id="edge-person-mission"></line>
+            <line class="edge-line" x1="100" y1="100" x2="400" y2="100" id="edge-institute-fellowship"></line>
+
+            <!-- Central Node: Person -->
+            <g class="node-group" transform="translate(250,200)" data-node="Person" tabindex="0" role="button" aria-label="Inspect Person Node">
+              <circle class="node-circle" id="node-Person" r="22" fill="#ffb627" stroke="#ffffff" stroke-width="2"></circle>
+              <text class="node-text" y="34" text-anchor="middle">PERSON</text>
+              <text class="node-sub" y="46" text-anchor="middle">Talent / Candidate</text>
+            </g>
+            <!-- Node: Institute -->
+            <g class="node-group" transform="translate(100,100)" data-node="Institute" tabindex="0" role="button" aria-label="Inspect Institute Node">
+              <circle class="node-circle" id="node-Institute" r="18" fill="#4ce0c6" stroke="#ffffff" stroke-width="1.5"></circle>
+              <text class="node-text" y="28" text-anchor="middle">INSTITUTE</text>
+            </g>
+            <!-- Node: Fellowship -->
+            <g class="node-group" transform="translate(400,100)" data-node="Fellowship" tabindex="0" role="button" aria-label="Inspect Fellowship Node">
+              <circle class="node-circle" id="node-Fellowship" r="18" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5"></circle>
+              <text class="node-text" y="28" text-anchor="middle">FELLOWSHIP</text>
+            </g>
+            <!-- Node: Track -->
+            <g class="node-group" transform="translate(100,300)" data-node="Track" tabindex="0" role="button" aria-label="Inspect Track Node">
+              <circle class="node-circle" id="node-Track" r="18" fill="#141a27" stroke="#ffb627" stroke-width="2"></circle>
+              <text class="node-text" y="28" text-anchor="middle">TRACK</text>
+            </g>
+            <!-- Node: Mission -->
+            <g class="node-group" transform="translate(400,300)" data-node="Mission" tabindex="0" role="button" aria-label="Inspect Mission Node">
+              <circle class="node-circle" id="node-Mission" r="18" fill="#141a27" stroke="#4ce0c6" stroke-width="2"></circle>
+              <text class="node-text" y="28" text-anchor="middle">MISSION</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Inspector Sidepanel -->
+        <div class="ontology-inspector" id="nodeInspector" aria-live="polite">
+          <div>
+            <div class="inspector-header">
+              <span>ONTOLOGY INSPECTOR</span>
+              <span id="inspBadge" style="color:var(--amber);">OBJECT_CLASS</span>
+            </div>
+            <div class="inspector-title" id="inspTitle">PERSON</div>
+            <div class="inspector-desc" id="inspDesc">Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.</div>
+            <table class="inspector-prop-table">
+              <tr><td class="key">Primary Key</td><td class="val" id="inspPk">person_uuid</td></tr>
+              <tr><td class="key">Connected Links</td><td class="val" id="inspLinks">studies (Track), applies (Fellowship)</td></tr>
+              <tr><td class="key">Verification Level</td><td class="val" id="inspVerif">Cryptographic Proof</td></tr>
+              <tr><td class="key">Query Latency</td><td class="val">1.4ms</td></tr>
+            </table>
+          </div>
+          <div style="font-family:var(--mono); font-size:11px; color:var(--muted);">
+            Click or press enter on nodes in the diagram to inspect relational schemas.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track Board Section -->
+  <section class="section" id="board">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">The Board</div>
+        <h2>Domain Tracks &amp; Signal Metrics.</h2>
+        <p>A prototype view of the technical domains CosmoHub organizes into structured discovery and learning tracks.</p>
+      </div>
+      <div class="board-filter">
+        <button class="filter-chip active" data-cat="all">ALL TRACKS</button>
+        <button class="filter-chip" data-cat="comms">COMMS &amp; RF</button>
+        <button class="filter-chip" data-cat="systems">SYSTEMS &amp; GNC</button>
+        <button class="filter-chip" data-cat="policy">POLICY &amp; OPS</button>
+      </div>
+      <div class="index-grid" id="indexGrid"></div>
+    </div>
+  </section>
+
+  <!-- Roadmap Section -->
+  <section class="section" id="roadmap">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="eyebrow">Execution Strategy</div>
+        <h2>From focused prototype to connected ecosystem.</h2>
+        <p>A staged product direction: validate the discovery problem first, then build the data and institutional layers that make the network useful.</p>
+      </div>
+      <div class="roadmap-grid">
+        <div class="phase-card">
+          <div class="phase-num">PHASE 01 // NOW</div>
+          <h3>Signal &amp; Talent Graph</h3>
+          <p>Validate the core problem, launch a focused prototype, and test whether learners and early-career talent use a structured space opportunity graph.</p>
+          <ul class="phase-ul">
+            <li>Launch the public prototype</li>
+            <li>Interview learners and researchers</li>
+            <li>Validate the first high-value use cases</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 02 // NEXT</div>
+          <h3>Institutional Mesh</h3>
+          <p>Build structured opportunity data and begin working with universities, labs, communities, and space organizations where there is clear mutual value.</p>
+          <ul class="phase-ul">
+            <li>Structured opportunity discovery</li>
+            <li>Project and skill profiles</li>
+            <li>Early institutional pilots</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">PHASE 03 // VISION</div>
+          <h3>Autonomous Space Terminal</h3>
+          <p>Evolve into an intelligence layer that helps people navigate the space ecosystem and helps organizations discover relevant knowledge and talent.</p>
+          <ul class="phase-ul">
+            <li>Cross-ecosystem knowledge graph</li>
+            <li>Research and talent matching</li>
+            <li>Data-driven ecosystem intelligence</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Early Access Form -->
+  <section class="section" id="access">
+    <div class="wrap">
+      <div class="cta-panel">
         <div>
-          <div class="inspector-header">
-            <span>ONTOLOGY INSPECTOR</span>
-            <span id="inspBadge" style="color:var(--amber);">OBJECT_CLASS</span>
-          </div>
-          <div class="inspector-title" id="inspTitle">PERSON</div>
-          <div class="inspector-desc" id="inspDesc">Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.</div>
-          <table class="inspector-prop-table">
-            <tr><td class="key">Primary Key</td><td class="val" id="inspPk">person_uuid</td></tr>
-            <tr><td class="key">Connected Links</td><td class="val" id="inspLinks">studies (Track), applies (Fellowship)</td></tr>
-            <tr><td class="key">Verification Level</td><td class="val" id="inspVerif">Cryptographic Proof</td></tr>
-            <tr><td class="key">Query Latency</td><td class="val">1.4ms</td></tr>
-          </table>
+          <div class="eyebrow">Early Access</div>
+          <h2>Help shape the first version of CosmoHub.</h2>
+          <p>CosmoHub is currently an early-stage prototype. If you are a student, engineer, researcher, educator, institution, or potential collaborator, share your details and tell us where you fit.</p>
         </div>
-        <div style="font-family:var(--mono); font-size:11px; color:var(--muted);">
-          Click nodes in the diagram to inspect relational schemas.
+        <div>
+          <form id="accessForm" action="#" method="POST">
+            <div class="form-row">
+              <div class="form-field">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" name="full_name" placeholder="e.g. Kanti Mohanthy" required>
+              </div>
+              <div class="form-field">
+                <label for="emailAddr">Email Address</label>
+                <input type="email" id="emailAddr" name="email" placeholder="you@domain.com" required>
+              </div>
+              <div class="form-field">
+                <label for="userRole">Primary Role / Stakeholder</label>
+                <select id="userRole" name="role" required>
+                  <option value="" disabled selected>Select option</option>
+                  <option value="investor">Investor / Accelerator / Ecosystem Partner</option>
+                  <option value="student">Student / Early-Career Engineer</option>
+                  <option value="professional">Space Professional</option>
+                  <option value="fellow">Researcher / Research Fellow</option>
+                  <option value="institute">University / Research Institution</option>
+                  <option value="community">Space Community / Educator</option>
+                </select>
+              </div>
+              <button type="submit" class="submit-btn">JOIN EARLY ACCESS</button>
+            </div>
+            <div class="form-note">Prototype form — immediate confirmation provided.</div>
+            <div class="form-success" id="formSuccess" role="status" aria-live="polite">✓ Thanks — your interest has been recorded in this prototype.</div>
+          </form>
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- Track Board Section -->
-<section class="section" id="board">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">The Board</div>
-      <h2>Domain Tracks &amp; Signal Metrics.</h2>
-      <p>A prototype view of the technical domains CosmoHub organizes into structured discovery and learning tracks.</p>
-    </div>
-    <div class="board-filter">
-      <button class="filter-chip active" onclick="filterBoard('all', this)">ALL TRACKS</button>
-      <button class="filter-chip" onclick="filterBoard('comms', this)">COMMS &amp; RF</button>
-      <button class="filter-chip" onclick="filterBoard('systems', this)">SYSTEMS &amp; GNC</button>
-      <button class="filter-chip" onclick="filterBoard('policy', this)">POLICY &amp; OPS</button>
-    </div>
-    <div class="index-grid" id="indexGrid"></div>
-  </div>
-</section>
-
-<!-- Roadmap Section -->
-<section class="section" id="roadmap">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="eyebrow">Execution Strategy</div>
-      <h2>From focused prototype to connected ecosystem.</h2>
-      <p>A staged product direction: validate the discovery problem first, then build the data and institutional layers that make the network useful.</p>
-    </div>
-    <div class="roadmap-grid">
-      <div class="phase-card">
-        <div class="phase-num">PHASE 01 // NOW</div>
-        <h3>Signal &amp; Talent Graph</h3>
-        <p>Validate the core problem, launch a focused prototype, and test whether learners and early-career talent use a structured space opportunity graph.</p>
-        <ul class="phase-ul">
-          <li>Launch the public prototype</li>
-          <li>Interview learners and researchers</li>
-          <li>Validate the first high-value use cases</li>
-        </ul>
-      </div>
-      <div class="phase-card">
-        <div class="phase-num">PHASE 02 // NEXT</div>
-        <h3>Institutional Mesh</h3>
-        <p>Build structured opportunity data and begin working with universities, labs, communities, and space organizations where there is clear mutual value.</p>
-        <ul class="phase-ul">
-          <li>Structured opportunity discovery</li>
-          <li>Project and skill profiles</li>
-          <li>Early institutional pilots</li>
-        </ul>
-      </div>
-      <div class="phase-card">
-        <div class="phase-num">PHASE 03 // VISION</div>
-        <h3>Autonomous Space Terminal</h3>
-        <p>Evolve into an intelligence layer that helps people navigate the space ecosystem and helps organizations discover relevant knowledge and talent.</p>
-        <ul class="phase-ul">
-          <li>Cross-ecosystem knowledge graph</li>
-          <li>Research and talent matching</li>
-          <li>Data-driven ecosystem intelligence</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Early Access Form -->
-<section class="section" id="access">
-  <div class="wrap">
-    <div class="cta-panel">
-      <div>
-        <div class="eyebrow">Early Access</div>
-        <h2>Help shape the first version of CosmoHub.</h2>
-        <p>CosmoHub is currently an early-stage prototype. If you are a student, engineer, researcher, educator, institution, or potential collaborator, share your details and tell us where you fit.</p>
-      </div>
-      <div>
-        <form id="accessForm" onsubmit="handleForm(event)">
-          <div class="form-row">
-            <div class="form-field">
-              <label for="name">Full Name</label>
-              <input type="text" id="name" placeholder="e.g. Kanti Mohanthy" required>
-            </div>
-            <div class="form-field">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" placeholder="you@domain.com" required>
-            </div>
-            <div class="form-field">
-              <label for="role">Primary Role / Stakeholder</label>
-              <select id="role" required>
-                <option value="" disabled selected>Select option</option>
-                <option value="investor">Investor / Accelerator / Ecosystem Partner</option>
-                <option value="student">Student / Early-Career Engineer</option>
-                <option value="professional">Space Professional</option>
-                <option value="fellow">Researcher / Research Fellow</option>
-                <option value="institute">University / Research Institution</option>
-                <option value="community">Space Community / Educator</option>
-              </select>
-            </div>
-            <button type="submit" class="submit-btn">JOIN EARLY ACCESS</button>
-          </div>
-          <div class="form-note">Prototype form — immediate confirmation provided.</div>
-          <div class="form-success" id="formSuccess">✓ Thanks — your interest has been recorded in this prototype.</div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <!-- Footer -->
 <footer>
   <div class="wrap foot-row">
     <div class="logo">
-      <span class="dot"></span>COSMOHUB TERMINAL
+      <span class="dot" aria-hidden="true"></span>COSMOHUB TERMINAL
     </div>
     <div class="foot-meta">
       Early-stage prototype · Building the discovery layer for the space ecosystem
@@ -759,10 +808,10 @@
   </div>
 </footer>
 
-<!-- Modal Backdrop & Box -->
-<div class="modal-backdrop" id="trackModal" onclick="handleBackdropClick(event)">
+<!-- Modal Backdrop & Dialog Box -->
+<div class="modal-backdrop" id="trackModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()" aria-label="Close modal">×</button>
+    <button class="modal-close" id="modalCloseBtn" aria-label="Close modal">×</button>
     <div class="eyebrow" id="modalCode">SATCOM</div>
     <h2 id="modalTitle">Satellite Communications</h2>
     <p id="modalDesc" style="color:var(--muted); font-size:14px; margin-bottom:20px; line-height:1.5;">Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.</p>
@@ -771,90 +820,74 @@
       <div>Prototype Track Status: <span style="color:var(--cyan);" id="modalParam1">Exploration</span></div>
       <div>Planned Content: <span style="color:var(--cyan);" id="modalParam2">Curriculum + opportunities + projects</span></div>
     </div>
-    <button class="btn-primary" style="width:100%;" onclick="closeModal()">CLOSE PREVIEW</button>
+    <button class="btn-primary" style="width:100%;" id="modalConfirmBtn">CLOSE PREVIEW</button>
   </div>
 </div>
 
 <script>
-  // Mobile drawer toggle
-  function toggleMobileMenu(){
-    document.getElementById('mobileDrawer').classList.toggle('active');
-  }
+  // Complete Valid NodeData Object & Robust Fallbacks
+  const nodeData = {
+    Person: {
+      pk: 'person_uuid',
+      title: 'PERSON (Talent Node)',
+      desc: 'Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.',
+      links: 'studies (Track), applies (Fellowship)',
+      badge: 'TALENT_NODE',
+      edges: ['edge-person-institute', 'edge-person-fellowship', 'edge-person-track']
+    },
+    Institute: {
+      pk: 'institute_id',
+      title: 'INSTITUTE (Academic / Lab)',
+      desc: 'Space research institutes, university aerospace departments, and agencies providing academic fellowships and mission collaborations.',
+      links: 'hosts (Fellowship), publishes (Mission)',
+      badge: 'INSTITUTION_NODE',
+      edges: ['edge-person-institute', 'edge-institute-fellowship']
+    },
+    Fellowship: {
+      pk: 'fellowship_id',
+      title: 'FELLOWSHIP (Opportunity)',
+      desc: 'Funded research windows, lab seats, and grant positions offered directly by partner institutions.',
+      links: 'offered_by (Institute), applied_by (Person)',
+      badge: 'OPPORTUNITY_NODE',
+      edges: ['edge-person-fellowship', 'edge-institute-fellowship']
+    },
+    Track: {
+      pk: 'track_code',
+      title: 'TRACK (Curriculum / Skill)',
+      desc: 'Structured domain path (SATCOM, GNC, PROP) mapping core skills required for space missions.',
+      links: 'prepares_for (Fellowship), followed_by (Person)',
+      badge: 'CURRICULUM_NODE',
+      edges: ['edge-person-track']
+    },
+    Mission: {
+      pk: 'mission_id',
+      title: 'MISSION (Real Space Payload)',
+      desc: 'Active satellite constellations, planetary probes, and experimental payloads seeking technical contributors.',
+      links: 'requires (Track), managed_by (Institute)',
+      badge: 'MISSION_NODE',
+      edges: ['edge-person-mission']
+    }
+  };
 
-  // Ticker bar animation content
-  const tickerItems = [
-    { t: 'COSMOHUB', s: 'prototype live', cls: 'up', arrow: '▲' },
-    { t: 'SATCOM', s: 'domain map active', cls: 'up', arrow: '▲' },
-    { t: 'GNC', s: 'learning path concept', cls: '', arrow: '' },
-    { t: 'RESEARCH OPPORTUNITIES', s: 'discovery layer active', cls: 'up', arrow: '▲' },
-    { t: 'SPACE LAW', s: 'policy track added', cls: '', arrow: '' },
-    { t: 'KNOWLEDGE GRAPH', s: '5 core nodes linked', cls: 'up', arrow: '▲' }
-  ];
-  function renderTicker(){
-    const track = document.getElementById('tickerTrack');
-    if(!track) return;
-    const html = tickerItems.map(i =>
-      `<span><b>${i.t}</b> ${i.s} ${i.arrow ? `<span class="${i.cls}">${i.arrow}</span>` : ''}</span>`
-    ).join('');
-    track.innerHTML = html + html;
-  }
-  renderTicker();
+  function selectNode(type) {
+    const data = nodeData[type] || {};
+    document.getElementById('inspTitle').textContent = data.title || type.toUpperCase();
+    document.getElementById('inspDesc').textContent = data.desc || 'No description available.';
+    document.getElementById('inspPk').textContent = data.pk || '—';
+    document.getElementById('inspLinks').textContent = data.links || '—';
+    document.getElementById('inspBadge').textContent = data.badge || 'OBJECT_CLASS';
 
-  // UTC Live Signal Clock
-  function tickClock(){
-    const el = document.getElementById('utcClock');
-    if(!el) return;
-    const now = new Date();
-    const hh = String(now.getUTCHours()).padStart(2,'0');
-    const mm = String(now.getUTCMinutes()).padStart(2,'0');
-    const ss = String(now.getUTCSeconds()).padStart(2,'0');
-    el.textContent = `${hh}:${mm}:${ss} UTC`;
-  }
-  tickClock(); setInterval(tickClock, 1000);
-
-  // The Gap Toggle View
-  function setGapView(mode){
-    const btnCurr = document.getElementById('btnGapCurrent');
-    const btnCosmo = document.getElementById('btnGapCosmo');
-    const arrowText = document.getElementById('gapArrowText');
-    if(mode === 'current'){
-      btnCurr.classList.add('active'); btnCosmo.classList.remove('active');
-      arrowText.textContent = 'NO DIRECT SIGNAL';
-      arrowText.style.color = 'var(--amber)';
-    } else {
-      btnCosmo.classList.add('active'); btnCurr.classList.remove('active');
-      arrowText.textContent = 'COSMOHUB SIGNAL GRAPH';
-      arrowText.style.color = 'var(--cyan)';
+    // Highlight connected SVG edge lines dynamically
+    document.querySelectorAll('.edge-line').forEach(line => line.classList.remove('active'));
+    if(data.edges && Array.isArray(data.edges)){
+      data.edges.forEach(edgeId => {
+        const edge = document.getElementById(edgeId);
+        if(edge) edge.classList.add('active');
+      });
     }
   }
 
-  // Ontology Nodes Data & Dynamic Line Highlights
-  const nodeData = {
-    'Person': { pk: 'person_uuid', title: 'PERSON (Talent Node)', desc: 'Represents individual students, engineers, and research fellows in the space ecosystem. Linked to verified competencies and active applications.', links: 'studies (Track), applies (Fellowship)', badge: 'TALENT_NODE', edges: ['edge-person-institute', 'edge-person-fellowship', 'edge-person-track'] },
-    'Institute': { pk: 'institute_id', title: 'INSTITUTE (Academic / Lab)', desc: 'Space research institutes, university departments, agencies, and organizations that publish research and opportunity information.', links: 'sponsors (Fellowship), operates (Mission)', badge: 'INSTITUTION_NODE', edges: ['edge-person-institute', 'edge-institute-fellowship'] },
-    'Fellowship': { pk: 'fellowship_id', title: 'FELLOWSHIP (Opportunity)', desc: 'Funded research windows, lab seats, and grant positions offered directly by partner institutions.', links: 'offered_by (Institute), target (Track)', badge: 'OPPORTUNITY_NODE', edges: ['edge-person-fellowship', 'edge-institute-fellowship'] },
-    'Track': { pk: 'track_code', title: 'TRACK (Curriculum / Skill)', desc: 'Structured domain path (SATCOM, GNC, PROP) mapping core skills required for space missions.', links: 'prepares_for (Fellowship), completed_by (Person)', badge: 'CURRICULUM_NODE', edges: ['edge-person-track'] },
-    'Mission': { pk: 'mission_id', title: 'MISSION (Real Space Payload)', desc: 'Space missions and projects represented as knowledge entities that link to technical domains and expertise.', links: 'managed_by (Institute), requires (Track)', badge: 'MISSION_NODE', edges: ['edge-person-mission'] }
-  };
-
-  function selectNode(type){
-    const data = nodeData[type];
-    if(!data) return;
-    document.getElementById('inspTitle').textContent = data.title;
-    document.getElementById('inspDesc').textContent = data.desc;
-    document.getElementById('inspPk').textContent = data.pk;
-    document.getElementById('inspLinks').textContent = data.links;
-    document.getElementById('inspBadge').textContent = data.badge;
-
-    // Highlight connected SVG edges dynamically
-    document.querySelectorAll('.edge-line').forEach(line => line.classList.remove('active'));
-    data.edges.forEach(edgeId => {
-      const edge = document.getElementById(edgeId);
-      if(edge) edge.classList.add('active');
-    });
-  }
-
-  // Board Domain Tracks Data
+  // Domain Tracks Data
   const tracks = [
     { code: 'SATCOM', category: 'comms', name: 'Satellite Communications', signal: 'HIGH', path: 'M0,26 L14,20 L28,22 L42,12 L56,15 L70,6 L84,9 L98,2', color: 'var(--cyan)' },
     { code: 'GNC', category: 'systems', name: 'Guidance, Navigation & Control', signal: 'RISING', path: 'M0,20 L14,22 L28,16 L42,18 L56,10 L70,13 L84,7 L98,9', color: 'var(--amber)' },
@@ -871,7 +904,7 @@
     if(!grid) return;
     const filtered = filter === 'all' ? tracks : tracks.filter(t => t.category === filter);
     grid.innerHTML = filtered.map(tr => `
-      <div class="idx-card" onclick="openModal('${tr.code}', '${tr.name}', 'Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.', 'Active Track', 'Curriculum + Projects')">
+      <div class="idx-card" data-code="${tr.code}" data-name="${tr.name}" tabindex="0" role="button" aria-label="View ${tr.name} track details">
         <div class="idx-top">
           <span class="idx-code">${tr.code}</span>
           <span class="idx-signal ${tr.signal === 'HIGH' ? 'high' : 'rising'}">${tr.signal}</span>
@@ -882,23 +915,35 @@
         </svg>
       </div>
     `).join('');
-  }
-  renderBoard();
 
-  function filterBoard(cat, btnEl){
-    document.querySelectorAll('.board-filter .filter-chip').forEach(c => c.classList.remove('active'));
-    if(btnEl) btnEl.classList.add('active');
-    renderBoard(cat);
+    // Attach clean click listeners to dynamically created track cards
+    grid.querySelectorAll('.idx-card').forEach(card => {
+      card.addEventListener('click', () => {
+        openModal(
+          card.dataset.code,
+          card.dataset.name,
+          'Detailed curriculum covering link budgets, RF design, constellation routing, and ground station operations.',
+          'Active Track',
+          'Curriculum + Projects'
+        );
+      });
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
   }
 
   // Space Intelligence Prototype Feed
   const sampleIntelligence = [
-    {type:'news',source:'SPACE SECTOR',date:'LIVE-READY',title:'Mission and industry updates in one signal layer',summary:'CosmoHub aggregates trusted space announcements and mission updates into a structured, filterable feed.',url:''},
-    {type:'research',source:'UNIVERSITY RESEARCH',date:'LIVE-READY',title:'Research discovery beyond scattered department pages',summary:'Surfaces relevant research papers, laboratory updates, calls for collaboration, and institutional research activity.',url:''},
-    {type:'research',source:'KNOWLEDGE GRAPH',date:'PROTOTYPE',title:'Connect research to skills, institutions, missions, and people',summary:'Instead of presenting isolated headlines, CosmoHub maps each signal to entities and technical domains.',url:''},
-    {type:'news',source:'MISSION SIGNALS',date:'PROTOTYPE',title:'Follow developments by domain, not just chronology',summary:'Organize updates around SATCOM, GNC, propulsion, remote sensing, mission operations, and space policy.',url:''},
-    {type:'research',source:'OPPORTUNITY LAYER',date:'PLANNED',title:'Turn information into discoverable pathways',summary:'Research signals directly connect to learning tracks, fellowships, projects, and relevant organizations.',url:''},
-    {type:'news',source:'COSMOHUB',date:'BUILDING',title:'The terminal is becoming an intelligence product',summary:'This public prototype demonstrates the interface while the live data ingestion layer is developed.',url:''}
+    {type:'news',source:'SPACE SECTOR',date:'LIVE-READY',title:'Mission and industry updates in one signal layer',summary:'CosmoHub aggregates trusted space announcements and mission updates into a structured, filterable feed.'},
+    {type:'research',source:'UNIVERSITY RESEARCH',date:'LIVE-READY',title:'Research discovery beyond scattered department pages',summary:'Surfaces relevant research papers, laboratory updates, calls for collaboration, and institutional research activity.'},
+    {type:'research',source:'KNOWLEDGE GRAPH',date:'PROTOTYPE',title:'Connect research to skills, institutions, missions, and people',summary:'Instead of presenting isolated headlines, CosmoHub maps each signal to entities and technical domains.'},
+    {type:'news',source:'MISSION SIGNALS',date:'PROTOTYPE',title:'Follow developments by domain, not just chronology',summary:'Organize updates around SATCOM, GNC, propulsion, remote sensing, mission operations, and space policy.'},
+    {type:'research',source:'OPPORTUNITY LAYER',date:'PLANNED',title:'Turn information into discoverable pathways',summary:'Research signals directly connect to learning tracks, fellowships, projects, and relevant organizations.'},
+    {type:'news',source:'COSMOHUB',date:'BUILDING',title:'The terminal is becoming an intelligence product',summary:'This public prototype demonstrates the interface while the live data ingestion layer is developed.'}
   ];
 
   function renderIntelligence(filter = 'all'){
@@ -909,48 +954,190 @@
       grid.innerHTML = '<div class="intel-empty">NO SIGNALS AVAILABLE FOR THIS FILTER.</div>';
       return;
     }
-    grid.innerHTML = items.map(item => `
-      <article class="intel-card" onclick="openModal('${item.source}', '${item.title}', '${item.summary}', '${item.type.toUpperCase()}', '${item.date}')">
+    grid.innerHTML = items.map((item, idx) => `
+      <article class="intel-card" data-idx="${idx}" tabindex="0" role="button" aria-label="Read ${item.title}">
         <div class="intel-meta"><span class="intel-source">${item.source}</span><span>${item.date}</span></div>
         <h3>${item.title}</h3>
         <p>${item.summary}</p>
         <span class="intel-link">VIEW SIGNAL METRICS →</span>
       </article>
     `).join('');
-  }
-  renderIntelligence();
 
-  function filterIntel(cat, btnEl){
-    document.querySelectorAll('.intel-tab').forEach(b => b.classList.remove('active'));
-    if(btnEl) btnEl.classList.add('active');
-    renderIntelligence(cat);
+    // Attach event listeners
+    grid.querySelectorAll('.intel-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const item = items[card.dataset.idx];
+        if(item){
+          openModal(item.source, item.title, item.summary, item.type.toUpperCase(), item.date);
+        }
+      });
+      card.addEventListener('keydown', (e) => {
+        if(e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
   }
 
-  // Modal logic with Backdrop & Keyboard support
+  // Ticker bar renderer
+  const tickerItems = [
+    { t: 'COSMOHUB', s: 'prototype live', cls: 'up', arrow: '▲' },
+    { t: 'SATCOM', s: 'domain map active', cls: 'up', arrow: '▲' },
+    { t: 'GNC', s: 'learning path concept', cls: '', arrow: '' },
+    { t: 'RESEARCH OPPORTUNITIES', s: 'discovery layer active', cls: 'up', arrow: '▲' },
+    { t: 'SPACE LAW', s: 'policy track added', cls: '', arrow: '' },
+    { t: 'KNOWLEDGE GRAPH', s: '5 core nodes linked', cls: 'up', arrow: '▲' }
+  ];
+
+  function renderTicker(){
+    const track = document.getElementById('tickerTrack');
+    if(!track) return;
+    const html = tickerItems.map(i =>
+      `<span><b>${i.t}</b> ${i.s} ${i.arrow ? `<span class="${i.cls}">${i.arrow}</span>` : ''}</span>`
+    ).join('');
+    track.innerHTML = html + html;
+  }
+
+  // UTC Live Signal Clock
+  function tickClock(){
+    const el = document.getElementById('utcClock');
+    if(!el) return;
+    const now = new Date();
+    const hh = String(now.getUTCHours()).padStart(2,'0');
+    const mm = String(now.getUTCMinutes()).padStart(2,'0');
+    const ss = String(now.getUTCSeconds()).padStart(2,'0');
+    el.textContent = `${hh}:${mm}:${ss} UTC`;
+  }
+
+  // Modal Open/Close & Focus Management
+  let previousActiveElement = null;
+
   function openModal(code, title, desc, p1 = 'Active', p2 = 'Curriculum & Research'){
+    previousActiveElement = document.activeElement;
     document.getElementById('modalCode').textContent = code;
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalDesc').textContent = desc;
     document.getElementById('modalParam1').textContent = p1;
     document.getElementById('modalParam2').textContent = p2;
-    document.getElementById('trackModal').style.display = 'flex';
+    const modal = document.getElementById('trackModal');
+    modal.style.display = 'flex';
+    document.getElementById('modalConfirmBtn').focus();
   }
-  function closeModal(){
-    document.getElementById('trackModal').style.display = 'none';
-  }
-  function handleBackdropClick(e){
-    if(e.target.id === 'trackModal') closeModal();
-  }
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeModal();
-  });
 
-  // Form submit handler
-  function handleForm(e){
-    e.preventDefault();
-    document.getElementById('formSuccess').style.display = 'block';
-    document.getElementById('accessForm').reset();
+  function closeModal(){
+    const modal = document.getElementById('trackModal');
+    modal.style.display = 'none';
+    if(previousActiveElement) previousActiveElement.focus();
   }
+
+  // Single DOMContentLoaded Listener for all Event Wiring (No inline handlers)
+  document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initial Renderings
+    renderTicker();
+    tickClock();
+    setInterval(tickClock, 1000);
+    renderBoard('all');
+    renderIntelligence('all');
+
+    // 2. Mobile Menu Toggle
+    const mobileToggle = document.getElementById('mobileMenuToggle');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    if(mobileToggle && mobileDrawer){
+      mobileToggle.addEventListener('click', () => {
+        const expanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+        mobileToggle.setAttribute('aria-expanded', !expanded);
+        mobileDrawer.classList.toggle('active');
+      });
+      mobileDrawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileDrawer.classList.remove('active');
+          mobileToggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    // 3. Gap Section Toggle Buttons
+    const btnGapCurr = document.getElementById('btnGapCurrent');
+    const btnGapCosmo = document.getElementById('btnGapCosmo');
+    const arrowText = document.getElementById('gapArrowText');
+    if(btnGapCurr && btnGapCosmo && arrowText){
+      btnGapCurr.addEventListener('click', () => {
+        btnGapCurr.classList.add('active');
+        btnGapCosmo.classList.remove('active');
+        arrowText.textContent = 'NO DIRECT SIGNAL';
+        arrowText.style.color = 'var(--amber)';
+      });
+      btnGapCosmo.addEventListener('click', () => {
+        btnGapCosmo.classList.add('active');
+        btnGapCurr.classList.remove('active');
+        arrowText.textContent = 'COSMOHUB SIGNAL GRAPH';
+        arrowText.style.color = 'var(--cyan)';
+      });
+    }
+
+    // 4. Board Filter Buttons (Clean Data Attribute Listeners)
+    document.querySelectorAll('.board-filter .filter-chip').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.board-filter .filter-chip').forEach(c => c.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        const category = e.currentTarget.dataset.cat || 'all';
+        renderBoard(category);
+      });
+    });
+
+    // 5. Space Intelligence Filter Tabs
+    document.querySelectorAll('.intel-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.intel-tab').forEach(t => t.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        const filter = e.currentTarget.dataset.intel || 'all';
+        renderIntelligence(filter);
+      });
+    });
+
+    // 6. SVG Ontology Node Click & Keydown Listeners
+    document.querySelectorAll('.ontology-svg .node-group').forEach(group => {
+      const nodeType = group.dataset.node;
+      if(nodeType){
+        group.addEventListener('click', () => selectNode(nodeType));
+        group.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectNode(nodeType);
+          }
+        });
+      }
+    });
+
+    // 7. Modal Dismiss Handlers
+    const modalBackdrop = document.getElementById('trackModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+
+    if(modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if(e.target === modalBackdrop) closeModal();
+      });
+    }
+    if(modalCloseBtn) modalCloseBtn.addEventListener('click', closeModal);
+    if(modalConfirmBtn) modalConfirmBtn.addEventListener('click', closeModal);
+
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Escape') closeModal();
+    });
+
+    // 8. Access Form Handler
+    const accessForm = document.getElementById('accessForm');
+    const formSuccess = document.getElementById('formSuccess');
+    if(accessForm && formSuccess){
+      accessForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        formSuccess.style.display = 'block';
+        accessForm.reset();
+      });
+    }
+  });
 </script>
 </body>
 </html>
