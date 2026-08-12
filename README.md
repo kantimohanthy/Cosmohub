@@ -4,31 +4,38 @@
 
 CosmoHub is a foundational intelligence platform designed to connect people, organizations, missions, research, and technology in the space ecosystem through a structured knowledge graph.
 
-## Current State: Space Intelligence MVP
+## Current State: Space Intelligence MVP (v0.1 Pipeline & Product Layers)
 
-This repository contains the **Space Intelligence MVP**, an early-stage demonstration of the ontology-first approach to space sector intelligence. It moves beyond a static presentation into a structured, queryable data prototype.
+This repository contains the **Space Intelligence MVP**, an early-stage demonstration of the ontology-first approach to space sector intelligence. It moves beyond a static presentation into a structured, queryable data prototype, consisting of two main layers.
 
-### Key Features
-*   **Ontology Data Layer**: A structured JSON dataset modeling core entities (Organization, Person, Mission, Research, Technology, Opportunity) and their relationships.
-*   **Interactive Knowledge Graph**: Visualizes the relationships between entities, allowing users to explore the interconnected space ecosystem.
-*   **Intelligence Feed**: Displays structured data based on the underlying ontology rather than purely hardcoded HTML.
-*   **"Bloomberg Terminal" UX**: Maintains the focused, data-dense visual identity of an intelligence terminal.
+### 1. Intelligence Core
+The underlying system of record enforcing a strict bitemporal provenance pipeline.
+*   **Ontology Data Layer**: A structured dataset modeling core entities (`Organization`, `Person`, `Asset`, `Publication`, `Technology`, `FinancialEvent`, etc.) and their relationships.
+*   **Provenance Pipeline**: Extracts real-world evidence from Sources into Documents, and derives Claims explicitly linked back to the Source. Enforces verification rules (e.g., Confidence levels like `SOURCE_BACKED` vs. `SYNTHETIC`).
+
+### 2. Product Layers
+The Single Page Application (SPA) UX built on top of the Intelligence Core. These layers consume the same underlying graph without duplicating data.
+*   **Institution Intelligence**: Deep dossier views into Organizations.
+*   **Space News**: Connects verifiable news to the underlying graph entities.
+*   **Gamified Learning**: A bridge to the platform that uses tracks, lessons, quizzes, and XP seamlessly connected to the core intelligence elements (Missions, Companies, Research).
+*   **Research Intelligence**: Connects Publications to Researchers, Institutions, and Tech.
 
 ## Architecture
 
 The current architecture is intentionally lightweight and focused on demonstrating the core **Ontology First** principle without unnecessary infrastructure overhead.
 
-*   **Data Layer**: A local JSON-based structured dataset (`data/ecosystem.js`) that defines entities and relationships.
-*   **Presentation Layer**: Vanilla HTML/CSS/JavaScript. No complex frameworks, ensuring the prototype remains understandable and easy to iterate upon.
-*   **Ontology Schema**: The underlying data model is documented in `docs/ontology.md`.
+*   **Pipeline & Validation**: Python scripts (`pipeline/`) demonstrating extraction, temporal handling, data integrity validation, and querying.
+*   **Data Export**: The pipeline exports a structured JSON dataset (`data/ecosystem.js`) that powers the UI.
+*   **Presentation Layer**: Vanilla HTML/CSS/JavaScript SPA (`index.html`). No complex frameworks, ensuring the prototype remains understandable and easy to iterate upon.
+*   **Documentation**: See `docs/product-architecture.md` and `docs/v0.1-pipeline.md`.
 
 ## Building Towards the Vision
 
 The long-term vision for CosmoHub is to become the definitive trust and reasoning layer for the global space domain.
 
 **Strategic Progression:**
-1.  **Current MVP**: Local, structured data demonstration of the ontology.
-2.  **Building**: Real data ingestion pipelines, automated entity extraction from unstructured sources, and a robust graph database backend.
+1.  **Current MVP**: Python-based pipeline validating and exporting provenanced data to a client-side SPA with Gamified learning entry points.
+2.  **Building**: Real data ingestion pipelines connected to external authorities (e.g. CORDIS), LLM-based structured entity extraction, and a dedicated temporal Graph Database.
 3.  **Long-Term Vision**: The verifiable knowledge and reasoning substrate for the entire space domain, serving institutions, governments, and commercial space actors.
 
 ## Developer Experience
@@ -36,14 +43,14 @@ The long-term vision for CosmoHub is to become the definitive trust and reasonin
 ### Setup Instructions
 
 1.  Clone the repository: `git clone https://github.com/kantimohanthy/Cosmohub.git`
-2.  Open `index.html` in your web browser. No build steps or server required for the current MVP.
+2.  To view the application, open `index.html` in your web browser or run `python -m http.server 8000`.
+3.  To run the backend extraction/validation pipeline, run `python -m unittest discover tests` from the root directory.
 
 ### Known Limitations
 
-*   **Static Data**: The current MVP uses a local, static dataset. It is not yet connected to live APIs or a backend database.
-*   **Client-Side Rendering**: All graph rendering and data filtering happen client-side. This will need to transition to server-side processing as the dataset scales.
+*   **Simulated Pipeline**: The Python extraction pipeline currently populates hardcoded data structures to demonstrate graph construction, temporal logic, and synthetic isolation.
+*   **Client-Side UI Routing**: The SPA uses simple client-side JS routing mapped directly to the exported JSON.
 
 ### Roadmap
 
-*   **Next Engineering Milestone**: Integrate a lightweight graph database (e.g., Neo4j or a simple triplestore) and build a basic API layer to replace the static JSON file.
-*   **Data Ingestion**: Develop scrapers and APIs to ingest real-world data from public space databases and research publications.
+*   **Next Engineering Milestone**: Implement an `Agent/User Profile` ontology allowing users to track progress over the learning graph and generate verifiable XP/achievement claims, providing bidirectional graph traversal connecting talent back to the ecosystem.
