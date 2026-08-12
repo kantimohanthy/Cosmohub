@@ -943,11 +943,11 @@
 
   // Space Intelligence Prototype Feed
   const sampleIntelligence = ecosystemData.entities.map(e => ({
-    type: e.type === "Research" ? "research" : "news",
+    type: e.type === "Publication" ? "research" : "news",
     source: e.type.toUpperCase(),
-    date: "LIVE DATA",
-    title: e.name || e.title,
-    summary: e.description || e.bio || e.objective || e.status,
+    date: e.date || "VERIFIED RECORD",
+    title: e.name || e.title || `Financial Event: ${e.eventType}`,
+    summary: e.assetClass || e.orgType || e.pubType || e.eventType || "Entity Record",
     originalEntity: e
   }));
 
@@ -1035,8 +1035,18 @@
           const otherId = r.source === entity.id ? r.target : r.source;
           const otherEnt = ecosystemData.entities.find(e => e.id === otherId);
           if (otherEnt) {
-            const name = otherEnt.name || otherEnt.title;
-            html += `<div>${r.type}: <span style="color:var(--cyan);">${name} (${otherEnt.type})</span></div>`;
+            const name = otherEnt.name || otherEnt.title || `${otherEnt.eventType} (${otherEnt.value})`;
+            let prov = "";
+            if (r.properties && r.properties.confidence) {
+              let sourceLink = "";
+              if (r.properties.source_id) {
+                const src = ecosystemData.entities.find(x => x.id === r.properties.source_id);
+                if (src && src.url) sourceLink = ` <a href="${src.url}" target="_blank" style="color:var(--cyan); text-decoration:underline;">[Source]</a>`;
+              }
+              prov = ` <span style="color:var(--muted); font-size:10px;">[${r.properties.confidence}]</span>${sourceLink}`;
+            }
+
+            html += `<div>${r.type}: <span style="color:var(--cyan);">${name} (${otherEnt.type})</span>${prov}</div>`;
           }
         });
         relsDiv.innerHTML = html;

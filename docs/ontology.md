@@ -1,52 +1,57 @@
-# CosmoHub Ontology
+# CosmoHub Ontology v0.1
 
-## Core Entities
+This ontology defines the foundational entities and relationships required for the CosmoHub Space Intelligence infrastructure.
 
-1.  **Organization**
-    *   `id`: Unique identifier
-    *   `name`: Name of the organization
-    *   `type`: University, Company, Agency, Research Institute
-    *   `description`: Brief summary
+## Core Philosophy: Provenance & Trust
+Every relationship (edge) in the graph MUST be backed by a verifiable source. The system does not deal in "truths", only in *claims* made by *sources*.
 
-2.  **Person**
-    *   `id`: Unique identifier
-    *   `name`: Full name
-    *   `role`: Current role (e.g., Researcher, Engineer, Student)
-    *   `bio`: Brief background
+## Entities
 
-3.  **Mission**
-    *   `id`: Unique identifier
-    *   `name`: Mission name
-    *   `status`: Active, Planned, Completed
-    *   `objective`: Primary goal
+1. **Organization**
+   - `id`: Unique identifier
+   - `name`: Official name
+   - `orgType`: Government, Commercial, Academic, Military
+   - `hq_location`: Country or region
 
-4.  **Research**
-    *   `id`: Unique identifier
-    *   `title`: Title of the research paper/project
-    *   `domain`: Technology domain (e.g., Propulsion, GNC)
-    *   `url`: Link to publication
+2. **Person**
+   - `id`: Unique identifier
+   - `name`: Full name
 
-5.  **Technology**
-    *   `id`: Unique identifier
-    *   `name`: Technology name
-    *   `category`: Category (e.g., Hardware, Software)
-    *   `description`: What it does
+3. **Asset**
+   - `id`: Unique identifier
+   - `name`: Name of the asset
+   - `assetClass`: LaunchVehicle, Spacecraft, Payload, GroundSegment
+   - `status`: Active, InDevelopment, Retired
 
-6.  **Opportunity**
-    *   `id`: Unique identifier
-    *   `title`: Role/Opportunity title
-    *   `type`: Job, Fellowship, Grant
-    *   `status`: Open, Closed
+4. **Technology**
+   - `id`: Unique identifier
+   - `name`: Name of the technology
+   - `domain`: Broad category (e.g., Propulsion, RF, GNC)
 
-## Relationships
+5. **Publication**
+   - `id`: Unique identifier
+   - `title`: Title of the document
+   - `pubType`: Paper, Patent, PressRelease, GovernmentFiling
+   - `date`: Publication date
+   - `url`: Verifiable source link
 
-*   **WORKS_AT**: Person -> Organization
-*   **STUDIES_AT**: Person -> Organization (University)
-*   **PART_OF**: Organization -> Organization (e.g., Lab part of University)
-*   **RESEARCHES**: Person/Organization -> Research/Technology
-*   **BUILDS**: Person/Organization -> Technology/Mission
-*   **FUNDS**: Organization -> Mission/Research/Organization
-*   **PARTICIPATES_IN**: Person/Organization -> Mission
-*   **RELATED_TO**: Research/Technology -> Research/Technology/Mission
-*   **REQUIRES**: Mission/Opportunity -> Technology/Skill
-*   **OFFERS**: Organization -> Opportunity
+6. **FinancialEvent**
+   - `id`: Unique identifier
+   - `eventType`: Grant, Contract, Investment
+   - `value`: Monetary value (optional, if public)
+   - `date`: Date of the event
+
+## Relationships (Edges)
+
+All edges inherently possess provenance properties:
+- `source_id`: Pointer to the `Publication` or source entity verifying this claim.
+- `confidence`: VERIFIED, SOURCE-BACKED, INFERRED.
+- `valid_from` / `valid_to`: Temporal bounds (optional).
+
+* **AFFILIATED_WITH**: Person -> Organization (Properties: `role`)
+* **MANUFACTURES**: Organization -> Asset
+* **OPERATES**: Organization -> Asset
+* **AUTHOR_OF**: Person/Organization -> Publication
+* **FUNDS**: Organization -> FinancialEvent -> Organization/Asset/Research
+* **INVOLVES_TECH**: Publication/Asset/Grant -> Technology
+* **CLAIMS_CAPABILITY**: Publication -> Asset/Technology
