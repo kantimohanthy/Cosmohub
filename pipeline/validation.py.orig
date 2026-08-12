@@ -10,15 +10,7 @@ VALID_PREDICATES = {
     "PROVIDED_FUNDING",
     "EMPLOYS",
     "IMPLEMENTS_TECHNOLOGY",
-    "HAS_PROPERTY", # for assigning direct properties like names
-    "MENTIONS",
-    "PUBLISHED",
-    "COVERS",
-    "OFFERS_OPPORTUNITY",
-    "INCLUDES_LESSON",
-    "INCLUDES_QUIZ",
-    "RELATES_TO_PROJECT",
-    "AUTHOR_OF"
+    "HAS_PROPERTY" # for assigning direct properties like names
 }
 
 def validate_graph(kg: KnowledgeGraph):

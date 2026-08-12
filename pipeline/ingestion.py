@@ -150,7 +150,7 @@ def ingest_esa_boost_data() -> KnowledgeGraph:
         valid_from="2020-11-03"
     ))
 
-    # Synthetic demo data to isolate
+    # Synthetic demo data to isolate and demonstrate UX product layers
     kg.add_entity(Entity(id="person_synthetic", type=EntityType.Person, properties={"name": "John Doe (Demo)"}))
     kg.add_claim(Claim(
         id="c_synth_1",
@@ -163,6 +163,29 @@ def ingest_esa_boost_data() -> KnowledgeGraph:
         status="ACTIVE",
         observed_at=timestamp
     ))
+
+    # Synthetic News
+    kg.add_entity(Entity(id="news_1", type=EntityType.NewsItem, properties={
+        "title": "[SYNTHETIC] ESA announces new SATCOM initiative",
+        "summary": "Simulated news article demonstrating news layer connected to core entities.",
+        "date": "2024-05-01",
+        "topic": "Satellites"
+    }))
+    kg.add_claim(Claim(id="c_synth_news_1", subject="news_1", predicate="MENTIONS", object="org_esa", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
+
+    # Synthetic Learning Path (connected to core tech)
+    kg.add_entity(Entity(id="tech_satcom", type=EntityType.Technology, properties={"name": "Satellite Communications"}))
+    kg.add_entity(Entity(id="path_satcom", type=EntityType.LearningPath, properties={"title": "SATCOM Fundamentals"}))
+    kg.add_entity(Entity(id="lesson_satcom_1", type=EntityType.Lesson, properties={"title": "Link Budgets", "xp": 50}))
+    kg.add_entity(Entity(id="quiz_satcom_1", type=EntityType.Quiz, properties={"title": "RF Fundamentals Quiz", "xp": 100}))
+    kg.add_entity(Entity(id="proj_satcom_1", type=EntityType.Project, properties={"title": "Build a Yagi Antenna", "xp": 500}))
+    kg.add_entity(Entity(id="opp_satcom", type=EntityType.Opportunity, properties={"title": "SATCOM Graduate Fellowship", "status": "Open"}))
+
+    kg.add_claim(Claim(id="c_synth_path_tech", subject="path_satcom", predicate="COVERS", object="tech_satcom", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
+    kg.add_claim(Claim(id="c_synth_path_les", subject="path_satcom", predicate="INCLUDES_LESSON", object="lesson_satcom_1", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
+    kg.add_claim(Claim(id="c_synth_path_quiz", subject="path_satcom", predicate="INCLUDES_QUIZ", object="quiz_satcom_1", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
+    kg.add_claim(Claim(id="c_synth_path_proj", subject="path_satcom", predicate="RELATES_TO_PROJECT", object="proj_satcom_1", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
+    kg.add_claim(Claim(id="c_synth_esa_opp", subject="org_esa", predicate="OFFERS_OPPORTUNITY", object="opp_satcom", source_id=None, evidence=None, confidence=Confidence.SYNTHETIC, status="ACTIVE", observed_at=timestamp))
 
     # 7. Temporal Model example (Superseded fact)
     # E.g. A claim that is no longer valid

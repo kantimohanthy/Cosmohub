@@ -97,6 +97,8 @@
     letter-spacing:0.04em; transition:all .2s; cursor:pointer; background:transparent;
   }
   .nav-cta:hover{background:var(--amber); color:#070a0f;}
+  .view-container { display: none; }
+  .view-container.active { display: block; }
 
   /*Mobile menu drawer */
   .mobile-menu-toggle{
@@ -432,33 +434,29 @@
       <span class="badge">BUILDING IN PUBLIC</span>
     </div>
     <div class="navlinks">
-      <a href="#gap">The Gap</a>
-      <a href="#intelligence">Space Intelligence</a>
-      <a href="#ontology">Ontology Graph</a>
-      <a href="#board">Track Board</a>
-      <a href="#roadmap">Roadmap</a>
+      <a href="#" data-view="home" class="nav-link active">Home</a>
+      <a href="#" data-view="institutions" class="nav-link">Institutions</a>
+      <a href="#" data-view="news" class="nav-link">News</a>
+      <a href="#" data-view="research" class="nav-link">Research</a>
+      <a href="#" data-view="learn" class="nav-link">Gamified Learning</a>
     </div>
     <div class="nav-right">
-      <a class="nav-cta" href="Pitch.html" aria-label="View the CosmoHub pitch deck">View Pitch Deck</a>
-      <a class="nav-cta" href="#access">Join Early Access</a>
       <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-expanded="false" aria-controls="mobileDrawer" aria-label="Toggle navigation menu">MENU ☰</button>
     </div>
   </nav>
   <div class="mobile-drawer" id="mobileDrawer">
-    <a href="#gap">The Gap</a>
-    <a href="#intelligence">Space Intelligence</a>
-    <a href="#ontology">Ontology Graph</a>
-    <a href="#board">Track Board</a>
-    <a href="#roadmap">Roadmap</a>
-    <a href="Pitch.html" style="color:var(--cyan);">View Pitch Deck</a>
-    <a href="#access" style="color:var(--amber);">Join Early Access</a>
+    <a href="#" data-view="home" class="nav-link active">Home</a>
+    <a href="#" data-view="institutions" class="nav-link">Institutions</a>
+    <a href="#" data-view="news" class="nav-link">News</a>
+    <a href="#" data-view="research" class="nav-link">Research</a>
+    <a href="#" data-view="learn" class="nav-link">Gamified Learning</a>
   </div>
   <div class="ticker-bar" role="region" aria-label="Live signals ticker">
     <div class="ticker-track" id="tickerTrack" aria-live="polite"></div>
   </div>
 </header>
 
-<main>
+<main id="view-home" class="view-container active">
   <!-- Hero Section -->
   <section class="hero">
     <div class="wrap hero-grid">
@@ -800,6 +798,31 @@
   </section>
 </main>
 
+<!-- INSTITUTIONS VIEW -->
+<main id="view-institutions" class="view-container wrap" style="padding:60px 20px;">
+  <h1 class="inspector-title" style="margin-bottom:40px;">Institution Intelligence</h1>
+  <div id="institutions-content" style="display:grid; gap:20px;"></div>
+</main>
+
+<!-- NEWS VIEW -->
+<main id="view-news" class="view-container wrap" style="padding:60px 20px;">
+  <h1 class="inspector-title" style="margin-bottom:40px;">Space News</h1>
+  <div id="news-content" class="intel-grid"></div>
+</main>
+
+<!-- RESEARCH VIEW -->
+<main id="view-research" class="view-container wrap" style="padding:60px 20px;">
+  <h1 class="inspector-title" style="margin-bottom:40px;">Research Intelligence</h1>
+  <div id="research-content" class="intel-grid"></div>
+</main>
+
+<!-- LEARN VIEW -->
+<main id="view-learn" class="view-container wrap" style="padding:60px 20px;">
+  <h1 class="inspector-title" style="margin-bottom:10px;">Gamified Learning</h1>
+  <p style="color:var(--muted); font-family:var(--mono); font-size:12px; margin-bottom:40px;">DISCOVER → LEARN → EXPLORE → CONNECT</p>
+  <div id="learn-content" style="display:grid; gap:20px;"></div>
+</main>
+
 <!-- Footer -->
 <footer>
   <div class="wrap foot-row">
@@ -890,6 +913,24 @@
         if(edge) edge.classList.add('active');
       });
     }
+
+    // SPA Navigation
+    document.querySelectorAll('[data-view]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetView = link.dataset.view;
+        document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.drawer-link').forEach(v => v.classList.remove('active'));
+        const el = document.getElementById('view-' + targetView);
+        if(el) el.classList.add('active');
+        document.querySelectorAll(`[data-view="${targetView}"]`).forEach(l => l.classList.add('active'));
+        if (mobileDrawer.classList.contains('active')) {
+             mobileToggle.setAttribute('aria-expanded', false);
+             mobileDrawer.classList.remove('active');
+        }
+      });
+    });
   }
 
   // Domain Tracks Data
@@ -961,12 +1002,48 @@
     }
     grid.innerHTML = items.map((item, idx) => `
       <article class="intel-card" data-idx="${idx}" tabindex="0" role="button" aria-label="Read ${item.title}">
-        <div class="intel-meta"><span class="intel-source">${item.source}</span><span>${item.date}</span></div>
-        <h3>${item.title}</h3>
+        <div class="intel-meta"><span class="intel-source">${item.source} ${item.originalEntity.properties && item.originalEntity.properties.is_synthetic ? '<span style="color:var(--amber);">[SYNTHETIC]</span>' : ''}</span><span>${item.date}</span></div>
+        <h3 style="${item.originalEntity.properties && item.originalEntity.properties.is_synthetic ? 'color:var(--muted);' : ''}">${item.title}</h3>
         <p>${item.summary}</p>
         <span class="intel-link">VIEW SIGNAL METRICS →</span>
       </article>
     `).join('');
+
+    // Render to SPA Sections based on types if possible
+    const orgs = ecosystemData.entities.filter(e => e.type === "Organization");
+    const news = ecosystemData.entities.filter(e => e.type === "NewsItem");
+    const research = ecosystemData.entities.filter(e => e.type === "Publication");
+    const learn = ecosystemData.entities.filter(e => ["LearningPath", "Lesson", "Quiz", "Project"].includes(e.type));
+
+    const instGrid = document.getElementById('institutions-content');
+    if(instGrid) instGrid.innerHTML = orgs.map(o => `<div class="intel-card" style="padding:24px; border:1px solid var(--border);">
+       <div class="intel-meta"><span class="intel-source">ORGANIZATION ${o.is_synthetic ? '[SYNTHETIC]' : ''}</span></div>
+       <h3 style="font-size:24px;">${o.name || o.title}</h3>
+       <p style="color:var(--cyan); margin-top:8px;">Location: ${o.hq || 'N/A'}</p>
+       <p style="color:var(--muted); font-size:12px; margin-top:8px;">This is a demonstration of the institution view mapping to the underlying provenanced graph.</p>
+    </div>`).join('');
+
+    const newsGrid = document.getElementById('news-content');
+    if(newsGrid) newsGrid.innerHTML = news.map(n => `<div class="intel-card">
+        <div class="intel-meta"><span class="intel-source">NEWS ${n.is_synthetic ? '<span style="color:var(--amber);">[SYNTHETIC]</span>' : ''}</span><span>${n.date || 'VERIFIED RECORD'}</span></div>
+        <h3>${n.title}</h3>
+        <p>${n.summary}</p>
+    </div>`).join('');
+
+    const resGrid = document.getElementById('research-content');
+    if(resGrid) resGrid.innerHTML = research.map(r => `<div class="intel-card">
+        <div class="intel-meta"><span class="intel-source">PUBLICATION ${r.is_synthetic ? '[SYNTHETIC]' : ''}</span><span>${r.date || 'VERIFIED RECORD'}</span></div>
+        <h3>${r.title}</h3>
+        <a href="${r.url}" target="_blank" style="color:var(--amber); font-family:var(--mono); font-size:12px;">VIEW SOURCE</a>
+    </div>`).join('');
+
+    const learnGrid = document.getElementById('learn-content');
+    if(learnGrid) learnGrid.innerHTML = learn.map(l => `<div class="intel-card" style="border-left:3px solid var(--cyan);">
+        <div class="intel-meta"><span class="intel-source">${l.type.toUpperCase()} ${l.is_synthetic ? '<span style="color:var(--amber);">[SYNTHETIC]</span>' : ''}</span></div>
+        <h3>${l.title || l.name}</h3>
+        ${l.xp ? `<div style="margin-top:12px; font-family:var(--mono); color:var(--amber); font-weight:bold;">+${l.xp} XP</div>` : ''}
+        <button style="margin-top:16px; background:var(--cyan-dim); border:none; padding:8px 16px; color:var(--text); cursor:pointer;" onclick="alert('XP Awarded! Provenance tracked.')">START</button>
+    </div>`).join('');
 
     // Attach event listeners
     grid.querySelectorAll('.intel-card').forEach(card => {

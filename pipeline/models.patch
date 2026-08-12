@@ -1,0 +1,16 @@
+--- pipeline/models.py
++++ pipeline/models.py
+@@ -19,6 +19,13 @@
+     Technology = "Technology"
+     Mission = "Mission"
+     FundingEvent = "FundingEvent"
++    Publication = "Publication"
++    NewsItem = "NewsItem"
++    Opportunity = "Opportunity"
++    LearningPath = "LearningPath"
++    Lesson = "Lesson"
++    Quiz = "Quiz"
++    Project = "Project"
+
+ @dataclass
+ class Source:
