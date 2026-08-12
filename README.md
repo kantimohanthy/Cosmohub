@@ -1,75 +1,49 @@
-# Cosmohub-
-CosmoHub is the missing link between space institutes and space talent, built on the same data-graph model that powers Palantir
-# CosmoHub — The Terminal & Ontology for the Space Economy
+# CosmoHub
 
-> **One-Liner**: "CosmoHub is the ontology-first bridge between space institutes and space talent — the Palantir Gotham of the space economy, the way Bloomberg is the terminal for finance."
+> "CosmoHub is the ontology-first bridge between space institutes and space talent — the Palantir Gotham of the space economy."
 
+CosmoHub is a foundational intelligence platform designed to connect people, organizations, missions, research, and technology in the space ecosystem through a structured knowledge graph.
 
-## 🚀 Live Features
-- **Bloomberg Terminal UI**: Real-time UTC Signal Clock, infinite live ticker bar, dark obsidian space mission control theme.
-- **Interactive Ontology Graph Visualizer**: Gotham-class schema graph linking `Person`, `Institute`, `Fellowship`, `Track`, and `Mission` nodes.
-- **Dynamic Track Index**: 8 space technology domain tracks with SVG sparklines and interactive modals.
+## Current State: Space Intelligence MVP
 
-**proposed €150K pre-seed budget**
-Use of funds	Amount	Share	What it actually buys
-Product & engineering	€57,000	38%	Full-stack product development, graph architecture, ingestion pipelines, UX
-Data, AI & infrastructure	€27,000	18%	Cloud, databases, vector/graph infrastructure, AI inference, monitoring
-Research & data operations	€18,000	12%	Source mapping, ontology development, data quality and verification
-GTM & institutional pilots	€18,000	12%	University outreach, pilot deployment, events and early acquisition
-Legal, company & IP	€12,000	8%	Incorporation, contracts, trademark/IP work, accounting and compliance
-Design & specialist contractors	€10,500	7%	Product design and specialist technical/domain work
-Contingency	€7,500	5%	Unexpected infrastructure, legal and operational costs
-Total	€150,000	100%	Approximately 15–18 months of disciplined runway
-The critical investor logic
+This repository contains the **Space Intelligence MVP**, an early-stage demonstration of the ontology-first approach to space sector intelligence. It moves beyond a static presentation into a structured, queryable data prototype.
 
-We are not raising €150K to “build CosmoHub.” That statement is too vague.We are raising €150K to move the company from:
+### Key Features
+*   **Ontology Data Layer**: A structured JSON dataset modeling core entities (Organization, Person, Mission, Research, Technology, Opportunity) and their relationships.
+*   **Interactive Knowledge Graph**: Visualizes the relationships between entities, allowing users to explore the interconnected space ecosystem.
+*   **Intelligence Feed**: Displays structured data based on the underlying ontology rather than purely hardcoded HTML.
+*   **"Bloomberg Terminal" UX**: Maintains the focused, data-dense visual identity of an intelligence terminal.
 
-Prototype + hypothesis
+## Architecture
 
-→ working data product
+The current architecture is intentionally lightweight and focused on demonstrating the core **Ontology First** principle without unnecessary infrastructure overhead.
 
-→ real users
+*   **Data Layer**: A local JSON-based structured dataset (`data/ecosystem.js`) that defines entities and relationships.
+*   **Presentation Layer**: Vanilla HTML/CSS/JavaScript. No complex frameworks, ensuring the prototype remains understandable and easy to iterate upon.
+*   **Ontology Schema**: The underlying data model is documented in `docs/ontology.md`.
 
-→ measured retention
+## Building Towards the Vision
 
-→ institutional pilots
+The long-term vision for CosmoHub is to become the definitive trust and reasoning layer for the global space domain.
 
-→ evidence of willingness to pay
+**Strategic Progression:**
+1.  **Current MVP**: Local, structured data demonstration of the ontology.
+2.  **Building**: Real data ingestion pipelines, automated entity extraction from unstructured sources, and a robust graph database backend.
+3.  **Long-Term Vision**: The verifiable knowledge and reasoning substrate for the entire space domain, serving institutions, governments, and commercial space actors.
 
-→ seed-investable company
+## Developer Experience
 
-That causal chain is what makes the ask credible.
+### Setup Instructions
 
-By the end of this pre-seed runway, I would set CosmoHub's target state around four milestones. 
+1.  Clone the repository: `git clone https://github.com/kantimohanthy/Cosmohub.git`
+2.  Open `index.html` in your web browser. No build steps or server required for the current MVP.
 
-**First,** product: a production-grade Space Intelligence MVP with real source ingestion, search, personalization and an initial knowledge graph—not the current static demonstration. 
-**Second,** market: roughly 1,000–3,000 genuinely activated users, with retention measured properly rather than simply reporting registrations. 
-**Third,** institutional validation: perhaps 3–5 credible pilots or design partnerships with universities, research organizations, communities or space-industry participants. 
-**Fourth,** commercial validation: the first paying customers or sufficiently strong pilot conversion evidence to demonstrate that somebody will pay for a defined workflow.
- Investors will immediately ask how you derived them. At this stage, credible milestones beat fantasy projections.
+### Known Limitations
 
-Funding → capability → evidence → next round
-Investment	Creates	Must produce
-€57K engineering	Real product	Repeat usage and retention
-€27K AI/data infrastructure	Automated intelligence pipeline	Fresh, scalable, reliable data
-€18K data operations	High-quality ontology	Defensible structured dataset
-€18K GTM/pilots	Distribution experiments	Users and institutional validation
-€12K legal/IP	Investable corporate foundation	Clean ownership and contracts
-€10.5K specialists	Better execution	Faster product quality
-€7.5K reserve	Operational resilience	Full runway to milestones
+*   **Static Data**: The current MVP uses a local, static dataset. It is not yet connected to live APIs or a backend database.
+*   **Client-Side Rendering**: All graph rendering and data filtering happen client-side. This will need to transition to server-side processing as the dataset scales.
 
-The strongest sentence for this pitch is therefore:
+### Roadmap
 
-We are preparing a €150,000 pre-seed round to fund 15–18 months of product and market validation. The capital will take CosmoHub from a founder-built prototype to a production intelligence platform with real data infrastructure, measurable user retention, initial institutional pilots and early commercial validation—creating the evidence required for a larger seed round.
-our next seed round should not be triggered because the €150K runs out. It should be triggered because the company has become objectively less risky.
-The pre-seed round should remove product risk by proving you can build the platform; data risk by proving the information can be aggregated and structured reliably; engagement risk by proving users return; distribution risk by identifying a repeatable acquisition channel; and commercial risk by demonstrating that institutions or professionals will pay.
-
-If those milestones are reached, the seed story changes from:
-
-**"I have an ambitious idea for the space economy."**
-
-to:
-
-**"We built the intelligence infrastructure, users repeatedly use it, institutions are piloting it, customers have begun paying, and €X million allows us to scale what is already working."**
-
-That is the actual purpose of the €150K.
+*   **Next Engineering Milestone**: Integrate a lightweight graph database (e.g., Neo4j or a simple triplestore) and build a basic API layer to replace the static JSON file.
+*   **Data Ingestion**: Develop scrapers and APIs to ingest real-world data from public space databases and research publications.
