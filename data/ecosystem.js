@@ -3,138 +3,118 @@ const ecosystemData = {
     {
       "id": "org_esa",
       "type": "Organization",
-      "name": "European Space Agency (ESA)",
-      "orgType": "Government",
-      "hq_location": "Europe"
+      "name": "European Space Agency (ESA)"
     },
     {
       "id": "org_isar",
       "type": "Organization",
       "name": "Isar Aerospace",
-      "orgType": "Commercial",
-      "hq_location": "Germany"
+      "hq": "Germany"
     },
     {
-      "id": "org_tum",
+      "id": "org_rfa",
       "type": "Organization",
-      "name": "Technical University of Munich",
-      "orgType": "Academic",
-      "hq_location": "Germany"
+      "name": "Rocket Factory Augsburg",
+      "hq": "Germany"
     },
     {
-      "id": "person_metzger",
-      "type": "Person",
-      "name": "Josef Fleischmann"
+      "id": "lv_spectrum",
+      "type": "LaunchVehicle",
+      "name": "Spectrum"
     },
     {
-      "id": "person_dani",
-      "type": "Person",
-      "name": "Daniel Metzler"
+      "id": "lv_rfa_one",
+      "type": "LaunchVehicle",
+      "name": "RFA One"
     },
     {
-      "id": "asset_spectrum",
-      "type": "Asset",
-      "name": "Spectrum",
-      "assetClass": "LaunchVehicle",
-      "status": "InDevelopment"
-    },
-    {
-      "id": "asset_aquila",
-      "type": "Asset",
-      "name": "Aquila Engine",
-      "assetClass": "Payload",
-      "status": "InDevelopment"
-    },
-    {
-      "id": "tech_prop",
-      "type": "Technology",
-      "name": "LOX/Propane Propulsion",
-      "domain": "Propulsion"
-    },
-    {
-      "id": "pub_isar_esa",
-      "type": "Publication",
-      "title": "ESA awards Isar Aerospace with \u20ac1.5M for Spectrum launch vehicle",
-      "pubType": "PressRelease",
-      "date": "2020-11-03",
-      "url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Isar_Aerospace_Spectrum_launch_vehicle"
-    },
-    {
-      "id": "fin_esa_boost",
-      "type": "FinancialEvent",
-      "eventType": "Contract",
+      "id": "fund_isar_esa",
+      "type": "FundingEvent",
       "value": "1500000 EUR",
-      "date": "2020-11-03"
+      "name": "ESA Boost! Isar"
+    },
+    {
+      "id": "fund_rfa_esa",
+      "type": "FundingEvent",
+      "value": "500000 EUR",
+      "name": "ESA Boost! RFA"
+    },
+    {
+      "id": "person_synthetic",
+      "type": "Person",
+      "name": "John Doe (Demo)"
+    },
+    {
+      "id": "lv_retired_demo",
+      "type": "LaunchVehicle",
+      "name": "Old Rocket"
     }
   ],
   "relationships": [
     {
-      "source": "person_dani",
-      "target": "org_isar",
-      "type": "AFFILIATED_WITH",
+      "source": "org_isar",
+      "target": "lv_spectrum",
+      "type": "MANUFACTURES",
       "properties": {
-        "role": "CEO",
-        "confidence": "VERIFIED"
-      }
-    },
-    {
-      "source": "person_metzger",
-      "target": "org_isar",
-      "type": "AFFILIATED_WITH",
-      "properties": {
-        "role": "COO",
-        "confidence": "VERIFIED"
-      }
-    },
-    {
-      "source": "person_dani",
-      "target": "org_tum",
-      "type": "AFFILIATED_WITH",
-      "properties": {
-        "role": "Alumni",
-        "confidence": "VERIFIED"
+        "confidence": "SOURCE_BACKED",
+        "evidence": "ESA is supporting the development of Isar Aerospace's Spectrum launch vehicle",
+        "source_id": "src_esa_isar_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Isar_Aerospace_Spectrum_launch_vehicle"
       }
     },
     {
       "source": "org_isar",
-      "target": "asset_spectrum",
-      "type": "MANUFACTURES",
+      "target": "fund_isar_esa",
+      "type": "RECEIVED_FUNDING",
       "properties": {
-        "confidence": "VERIFIED"
-      }
-    },
-    {
-      "source": "org_isar",
-      "target": "asset_aquila",
-      "type": "MANUFACTURES",
-      "properties": {
-        "confidence": "VERIFIED"
-      }
-    },
-    {
-      "source": "asset_aquila",
-      "target": "tech_prop",
-      "type": "INVOLVES_TECH",
-      "properties": {
-        "confidence": "VERIFIED"
+        "confidence": "SOURCE_BACKED",
+        "evidence": "ESA is supporting... The contract is worth \u20ac1.5M.",
+        "source_id": "src_esa_isar_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Isar_Aerospace_Spectrum_launch_vehicle"
       }
     },
     {
       "source": "org_esa",
-      "target": "fin_esa_boost",
-      "type": "FUNDS",
+      "target": "fund_isar_esa",
+      "type": "PROVIDED_FUNDING",
       "properties": {
-        "source_id": "pub_isar_esa",
-        "confidence": "SOURCE-BACKED"
+        "confidence": "SOURCE_BACKED",
+        "evidence": "ESA is supporting... The contract is worth \u20ac1.5M.",
+        "source_id": "src_esa_isar_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Isar_Aerospace_Spectrum_launch_vehicle"
       }
     },
     {
-      "source": "fin_esa_boost",
-      "target": "org_isar",
-      "type": "FUNDS",
+      "source": "org_rfa",
+      "target": "lv_rfa_one",
+      "type": "MANUFACTURES",
       "properties": {
-        "source_id": "pub_isar_esa",
-        "confidence": "SOURCE-BACKED"
+        "confidence": "SOURCE_BACKED",
+        "evidence": "Rocket Factory Augsburg's RFA One launch vehicle",
+        "source_id": "src_esa_rfa_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Rocket_Factory_Augsburg_launch_vehicle"
+      }
+    },
+    {
+      "source": "org_rfa",
+      "target": "fund_rfa_esa",
+      "type": "RECEIVED_FUNDING",
+      "properties": {
+        "confidence": "SOURCE_BACKED",
+        "evidence": "ESA is co-funding Rocket Factory Augsburg... The support is \u20ac500K.",
+        "source_id": "src_esa_rfa_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Rocket_Factory_Augsburg_launch_vehicle"
+      }
+    },
+    {
+      "source": "org_esa",
+      "target": "fund_rfa_esa",
+      "type": "PROVIDED_FUNDING",
+      "properties": {
+        "confidence": "SOURCE_BACKED",
+        "evidence": "ESA is co-funding Rocket Factory Augsburg... The support is \u20ac500K.",
+        "source_id": "src_esa_rfa_boost",
+        "source_url": "https://www.esa.int/Enabling_Support/Space_Transportation/Boost!_support_for_Rocket_Factory_Augsburg_launch_vehicle"
       }
     }
   ]
