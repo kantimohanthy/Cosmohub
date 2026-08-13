@@ -81,7 +81,7 @@ function renderInstitutions(container) {
 
 function renderMissions(container) {
   if (!engine) return;
-  const items = engine.getEntitiesByType('LaunchVehicle');
+  const items = engine.getEntitiesByType('Mission');
   const itemsHtml = items.map(m => `<div class="card" onclick="openEntity('${m.id}')"><h3>${m.canonicalName}</h3><p>Status: ${m.metadata.status || 'Unknown'}</p></div>`).join('');
   container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Missions</h2><div class="grid grid-3">${itemsHtml}</div></div>`;
 }
@@ -95,8 +95,8 @@ function renderResearch(container) {
 
 function renderNews(container) {
   if (!engine) return;
-  const items = engine.getEntitiesByType('NewsItem');
-  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Live Data'}</span></div></div>`).join('');
+  const items = engine.getEntitiesByType('News');
+  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Verified Record'}</span></div></div>`).join('');
   container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Space News Feed</h2><div class="grid grid-2">${itemsHtml}</div></div>`;
 }
 
@@ -166,11 +166,15 @@ function openEntity(id) {
   if(related.length > 0) {
     html += `<div class="relationship-group"><div class="relationship-title">Connections</div>`;
     related.forEach(r => {
-      // Fetch Provenance
       const prov = engine.getProvenanceForClaim(r.claim.id);
       let provText = r.claim.confidence;
       if (prov && prov.source) {
           provText += ` <a href="${prov.source.url}" target="_blank" style="color:var(--cyan); text-decoration:underline;">[Source]</a>`;
+      }
+
+      const ev = engine.getEvidenceForClaim(r.claim.id);
+      if (ev) {
+          provText += ` <span style="font-size:9px;">Evidence: "${ev}"</span>`;
       }
 
       html += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">

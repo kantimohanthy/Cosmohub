@@ -2,20 +2,31 @@
 
 class EntityResolver {
     constructor() {
-        this.aliasMap = new Map(); // map alias (lowercase) -> canonical ID
+        this.aliasMap = new Map(); // map alias (normalized) -> canonical ID
         this.idMap = new Map();    // map ID -> Entity object
+    }
+
+    normalize(text) {
+        if (!text) return "";
+        return text
+            .toLowerCase()
+            .trim()
+            // remove punctuation entirely for standard matching (e.g. "Space-X" -> "space x")
+            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ")
+            // collapse multiple spaces into single space
+            .replace(/\s{2,}/g, " ");
     }
 
     registerEntity(entity) {
         this.idMap.set(entity.id, entity);
 
         // Register canonical name
-        this.aliasMap.set(entity.canonicalName.toLowerCase(), entity.id);
+        this.aliasMap.set(this.normalize(entity.canonicalName), entity.id);
 
         // Register aliases
         if (entity.aliases) {
             for (const alias of entity.aliases) {
-                this.aliasMap.set(alias.toLowerCase(), entity.id);
+                this.aliasMap.set(this.normalize(alias), entity.id);
             }
         }
     }
@@ -28,10 +39,10 @@ class EntityResolver {
             return this.idMap.get(mention).id;
         }
 
-        // 2. Try resolving by deterministic alias mapping
-        const lower = mention.toLowerCase();
-        if (this.aliasMap.has(lower)) {
-            return this.aliasMap.get(lower);
+        // 2. Try resolving by deterministic alias mapping (normalized)
+        const norm = this.normalize(mention);
+        if (this.aliasMap.has(norm)) {
+            return this.aliasMap.get(norm);
         }
 
         // Return null if unresolved (strict deterministic mapping, no fake AI)
