@@ -1,3 +1,14 @@
+// Initialize Engine
+let engine = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof rawData !== 'undefined' && typeof QueryEngine !== 'undefined') {
+      engine = new QueryEngine(rawData.entities, rawData.claims, rawData.sources, rawData.documents);
+      document.getElementById('global-xp').textContent = userState.xp + ' XP';
+      document.getElementById('global-level').textContent = 'LVL ' + userState.level;
+  }
+});
+
 // View Renderers
 function renderHome(container) {
   container.innerHTML = `
@@ -22,67 +33,98 @@ function renderHome(container) {
 }
 
 function renderExplore(container) {
-  const allNodes = ecosystemData.entities;
+  if (!engine) return;
+  const allNodes = engine.entities;
+  const nodesHtml = Array.from(allNodes.values()).map(n => {
+      const isSynth = engine.getClaimsForEntity(n.id).some(c => c.confidence === "SYNTHETIC");
+      return `
+      <div class="card" onclick="openEntity('${n.id}')">
+         <div class="card-meta"><span>${n.entityType.toUpperCase()}</span> ${isSynth ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</div>
+         <h3 style="margin-top:12px;">${n.canonicalName}</h3>
+      </div>
+    `;
+  }).join('');
+
   container.innerHTML = `
     <div class="wrap">
       <h2 style="margin-bottom:24px;">Ecosystem Graph Explorer</h2>
       <div class="grid grid-3">
-        ${allNodes.map(n => `
-          <div class="card" onclick="openEntity('${n.id}')">
-             <div class="card-meta"><span>${n.type.toUpperCase()}</span> ${n.is_synthetic ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</div>
-             <h3 style="margin-top:12px;">${n.name}</h3>
-          </div>
-        `).join('')}
+        ${nodesHtml}
       </div>
     </div>
   `;
 }
 
 function renderInstitutions(container) {
-  const orgs = ecosystemData.entities.filter(e => e.type === 'Organization');
+  if (!engine) return;
+  const orgs = engine.getEntitiesByType('Organization');
+  const orgsHtml = orgs.map(o => {
+      const isSynth = engine.getClaimsForEntity(o.id).some(c => c.confidence === "SYNTHETIC");
+      return `
+      <div class="card" onclick="openEntity('${o.id}')" style="border-left: 4px solid var(--cyan);">
+         <h3>${o.canonicalName} ${isSynth ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</h3>
+         <p>${o.metadata.mission || o.metadata.hq || 'Intelligence Dossier'}</p>
+         <button class="btn">VIEW DOSSIER</button>
+      </div>
+    `;
+  }).join('');
+
   container.innerHTML = `
     <div class="wrap">
       <h2 style="margin-bottom:24px;">Institution Intelligence</h2>
       <div class="grid grid-2">
-        ${orgs.map(o => `
-          <div class="card" onclick="openEntity('${o.id}')" style="border-left: 4px solid var(--cyan);">
-             <h3>${o.name} ${o.is_synthetic ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</h3>
-             <p>${o.mission || o.hq || 'Intelligence Dossier'}</p>
-             <button class="btn">VIEW DOSSIER</button>
-          </div>
-        `).join('')}
+        ${orgsHtml}
       </div>
     </div>
   `;
 }
 
 function renderMissions(container) {
-  const items = ecosystemData.entities.filter(e => e.type === 'Mission');
-  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Missions</h2><div class="grid grid-3">${items.map(m => `<div class="card" onclick="openEntity('${m.id}')"><h3>${m.name}</h3><p>Status: ${m.status}</p></div>`).join('')}</div></div>`;
+  if (!engine) return;
+  const items = engine.getEntitiesByType('LaunchVehicle');
+  const itemsHtml = items.map(m => `<div class="card" onclick="openEntity('${m.id}')"><h3>${m.canonicalName}</h3><p>Status: ${m.metadata.status || 'Unknown'}</p></div>`).join('');
+  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Missions</h2><div class="grid grid-3">${itemsHtml}</div></div>`;
 }
 
 function renderResearch(container) {
-  const items = ecosystemData.entities.filter(e => e.type === 'Research' || e.type === 'Person');
-  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Research Intelligence</h2><div class="grid grid-3">${items.map(r => `<div class="card" onclick="openEntity('${r.id}')"><div class="card-meta"><span>${r.type.toUpperCase()}</span></div><h3 style="margin-top:12px;">${r.name}</h3></div>`).join('')}</div></div>`;
+  if (!engine) return;
+  const items = engine.getEntitiesByType('Publication').concat(engine.getEntitiesByType('Person'));
+  const itemsHtml = items.map(r => `<div class="card" onclick="openEntity('${r.id}')"><div class="card-meta"><span>${r.entityType.toUpperCase()}</span></div><h3 style="margin-top:12px;">${r.canonicalName}</h3></div>`).join('');
+  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Research Intelligence</h2><div class="grid grid-3">${itemsHtml}</div></div>`;
 }
 
 function renderNews(container) {
-  const items = ecosystemData.entities.filter(e => e.type === 'News');
-  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Space News Feed</h2><div class="grid grid-2">${items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.name}</h3><p>${n.summary}</p><div class="card-meta"><span>${n.date}</span></div></div>`).join('')}</div></div>`;
+  if (!engine) return;
+  const items = engine.getEntitiesByType('NewsItem');
+  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Live Data'}</span></div></div>`).join('');
+  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Space News Feed</h2><div class="grid grid-2">${itemsHtml}</div></div>`;
 }
 
 function renderProjects(container) {
-  const items = ecosystemData.entities.filter(e => e.type === 'Project');
-  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Builder Projects</h2><div class="grid grid-3">${items.map(p => `<div class="card" onclick="openEntity('${p.id}')"><h3>${p.name}</h3><p class="xp-badge">+${p.xp} XP</p></div>`).join('')}</div></div>`;
+  if (!engine) return;
+  const items = engine.getEntitiesByType('Project');
+  const itemsHtml = items.map(p => `<div class="card" onclick="openEntity('${p.id}')"><h3>${p.canonicalName}</h3><p class="xp-badge">+${p.metadata.xp || 0} XP</p></div>`).join('');
+  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Builder Projects</h2><div class="grid grid-3">${itemsHtml}</div></div>`;
 }
 
 function renderOpportunities(container) {
-  const items = ecosystemData.entities.filter(e => e.type === 'Opportunity');
-  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Opportunities</h2><div class="grid grid-3">${items.map(o => `<div class="card" onclick="openEntity('${o.id}')"><h3>${o.name}</h3><p>${o.type_opp} | ${o.status}</p></div>`).join('')}</div></div>`;
+  if (!engine) return;
+  const items = engine.getEntitiesByType('Opportunity');
+  const itemsHtml = items.map(o => `<div class="card" onclick="openEntity('${o.id}')"><h3>${o.canonicalName}</h3><p>${o.metadata.type_opp || 'Opportunity'} | ${o.metadata.status || 'Open'}</p></div>`).join('');
+  container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Opportunities</h2><div class="grid grid-3">${itemsHtml}</div></div>`;
 }
 
 function renderLearn(container) {
-  const paths = ecosystemData.entities.filter(e => e.type === 'Learning');
+  if (!engine) return;
+  const paths = engine.getEntitiesByType('LearningPath');
+  const pathsHtml = paths.map(p => `
+    <div class="card" onclick="openEntity('${p.id}')" style="border:1px solid var(--amber-dim);">
+       <h3>${p.canonicalName}</h3>
+       <p>${p.metadata.description || 'Learning Path'}</p>
+       <div class="card-meta"><span style="color:var(--amber);">PATH REWARD: +${p.metadata.xp || 0} XP</span><button class="btn btn-amber">START PATH</button></div>
+    </div>
+  `).join('');
+
   container.innerHTML = `
     <div class="wrap">
       <div style="display:flex; justify-content:space-between; margin-bottom:40px;">
@@ -94,13 +136,7 @@ function renderLearn(container) {
         </div>
       </div>
       <div class="grid grid-2">
-        ${paths.map(p => `
-          <div class="card" onclick="openEntity('${p.id}')" style="border:1px solid var(--amber-dim);">
-             <h3>${p.name}</h3>
-             <p>${p.description}</p>
-             <div class="card-meta"><span style="color:var(--amber);">PATH REWARD: +${p.xp} XP</span><button class="btn btn-amber">START PATH</button></div>
-          </div>
-        `).join('')}
+        ${pathsHtml}
       </div>
     </div>
   `;
@@ -108,44 +144,38 @@ function renderLearn(container) {
 
 // Entity Detail Modal Logic
 function openEntity(id) {
-  const entity = ecosystemData.entities.find(e => e.id === id);
+  if (!engine) return;
+  const entity = engine.getEntity(id);
   if(!entity) return;
 
-  // Find related claims
-  const outClaims = ecosystemData.claims.filter(c => c.source === id);
-  const inClaims = ecosystemData.claims.filter(c => c.target === id);
+  const related = engine.getRelatedEntities(id);
+  const isSynth = engine.getClaimsForEntity(id).some(c => c.confidence === "SYNTHETIC");
 
   let html = `
     <div class="entity-header">
-       <span class="eyebrow">${entity.type} ${entity.is_synthetic ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</span>
-       <h2>${entity.name}</h2>
-       <p style="color:var(--muted);">${entity.hq || entity.summary || entity.description || entity.mission || entity.role || ''}</p>
+       <span class="eyebrow">${entity.entityType} ${isSynth ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</span>
+       <h2>${entity.canonicalName}</h2>
+       <p style="color:var(--muted);">${entity.metadata.hq || entity.metadata.summary || entity.metadata.description || entity.metadata.mission || ''}</p>
     </div>
   `;
 
-  if(entity.type === "Lesson" || entity.type === "Project" || entity.type === "Quiz") {
-     html += `<button class="btn btn-amber" onclick="awardXP(${entity.xp})" style="margin-bottom:24px; width:100%;">COMPLETE ACTIVITY (+${entity.xp} XP)</button>`;
+  if(entity.entityType === "Lesson" || entity.entityType === "Project" || entity.entityType === "Quiz") {
+     html += `<button class="btn btn-amber" onclick="awardXP(${entity.metadata.xp || 100})" style="margin-bottom:24px; width:100%;">COMPLETE ACTIVITY (+${entity.metadata.xp || 100} XP)</button>`;
   }
 
-  if(outClaims.length > 0) {
-    html += `<div class="relationship-group"><div class="relationship-title">Connections (Outbound)</div>`;
-    outClaims.forEach(c => {
-      const target = ecosystemData.entities.find(e => e.id === c.target);
-      html += `<div class="relationship-item" onclick="openEntity('${target.id}')">
-        <span>${c.predicate} <strong style="color:var(--text);">${target.name}</strong></span>
-        <span class="prov">[${c.confidence}]</span>
-      </div>`;
-    });
-    html += `</div>`;
-  }
+  if(related.length > 0) {
+    html += `<div class="relationship-group"><div class="relationship-title">Connections</div>`;
+    related.forEach(r => {
+      // Fetch Provenance
+      const prov = engine.getProvenanceForClaim(r.claim.id);
+      let provText = r.claim.confidence;
+      if (prov && prov.source) {
+          provText += ` <a href="${prov.source.url}" target="_blank" style="color:var(--cyan); text-decoration:underline;">[Source]</a>`;
+      }
 
-  if(inClaims.length > 0) {
-    html += `<div class="relationship-group"><div class="relationship-title">Connections (Inbound)</div>`;
-    inClaims.forEach(c => {
-      const source = ecosystemData.entities.find(e => e.id === c.source);
-      html += `<div class="relationship-item" onclick="openEntity('${source.id}')">
-        <span><strong style="color:var(--text);">${source.name}</strong> ${c.predicate}</span>
-        <span class="prov">[${c.confidence}]</span>
+      html += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">
+        <span>${r.predicate} <strong style="color:var(--text);">${r.entity.canonicalName}</strong></span>
+        <span class="prov">[${provText}]</span>
       </div>`;
     });
     html += `</div>`;
@@ -177,8 +207,9 @@ function awardXP(amount) {
   }
 }
 
-// Initialise global trackers
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('global-xp').textContent = userState.xp + ' XP';
-    document.getElementById('global-level').textContent = 'LVL ' + userState.level;
-});
+// Global Gamification State mock
+const userState = {
+  xp: 1250,
+  level: 4,
+  completed: []
+};

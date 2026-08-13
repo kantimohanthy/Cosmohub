@@ -6,7 +6,14 @@
   <title>CosmoHub-Next | Space Intelligence</title>
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <script src="data/ecosystem.js" defer></script>
+
+  <!-- Intelligence Core v0.2 Models -->
+  <script src="js/core/models.js"></script>
+  <script src="js/core/resolver.js"></script>
+  <script src="js/core/query.js"></script>
+  <script src="data/ecosystem.js"></script>
+
+  <!-- Product Layers -->
   <script src="js/router.js" defer></script>
   <script src="js/ui.js" defer></script>
 </head>
@@ -14,7 +21,7 @@
   <!-- Top Navigation -->
   <header class="topbar">
     <div class="logo" data-route="home">
-      <span class="dot"></span>COSMOHUB <span class="badge">V2</span>
+      <span class="dot"></span>COSMOHUB <span class="badge">V2 CORE</span>
     </div>
     <nav class="navlinks">
       <a href="#" data-route="explore">EXPLORE</a>
