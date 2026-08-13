@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CosmoHub-Next | Space Intelligence</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="data/ecosystem.js" defer></script>
+  <script src="js/router.js" defer></script>
+  <script src="js/ui.js" defer></script>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="logo" data-route="home">
+      <span class="dot"></span>COSMOHUB <span class="badge">V2</span>
+    </div>
+    <nav class="navlinks">
+      <a href="#" data-route="explore">EXPLORE</a>
+      <a href="#" data-route="institutions">INSTITUTIONS</a>
+      <a href="#" data-route="missions">MISSIONS</a>
+      <a href="#" data-route="research">RESEARCH</a>
+      <a href="#" data-route="news">NEWS</a>
+      <a href="#" data-route="learn">LEARN</a>
+      <a href="#" data-route="projects">PROJECTS</a>
+      <a href="#" data-route="opportunities">OPPORTUNITIES</a>
+    </nav>
+    <div class="user-profile">
+      <span class="xp-badge" id="global-xp">0 XP</span>
+      <span class="level-badge" id="global-level">LVL 1</span>
+    </div>
+  </header>
+
+  <!-- SPA View Container -->
+  <main id="app-container">
+     <!-- Dynamic content injected here -->
+  </main>
+
+  <!-- Reusable Entity Detail Modal -->
+  <div id="entity-modal" class="modal-backdrop">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeEntityModal()">×</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+</body>
+</html>
