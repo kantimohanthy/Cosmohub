@@ -38,7 +38,7 @@ class Source {
 }
 
 class Document {
-    constructor(id, sourceId, title, url, contentReference, publicationDate, documentType) {
+    constructor(id, sourceId, title, url, contentReference, publicationDate, documentType, hash = null) {
         this.id = id;
         this.sourceId = sourceId;
         this.title = title;
@@ -46,6 +46,19 @@ class Document {
         this.contentReference = contentReference;
         this.publicationDate = publicationDate;
         this.documentType = documentType;
+        this.hash = hash;
+    }
+}
+
+class RawDocument {
+    constructor(sourceId, url, rawContent, contentType) {
+        this.sourceId = sourceId;
+        this.url = url;
+        this.rawContent = rawContent;
+        this.contentType = contentType;
+        this.retrievalTimestamp = new Date().toISOString();
+        // Dynamic hashing required to identify DOCUMENT_CHANGED and DUPLICATE_DOCUMENT
+        this.hash = null; // Generated externally
     }
 }
 
@@ -92,5 +105,5 @@ class Conflict {
 }
 
 if (typeof module !== 'undefined') {
-    module.exports = { Source, Document, Entity, Claim, Conflict, InstitutionTaxonomy, SourcePriority, MatchStatus };
+    module.exports = { Source, Document, RawDocument, Entity, Claim, Conflict, InstitutionTaxonomy, SourcePriority, MatchStatus };
 }

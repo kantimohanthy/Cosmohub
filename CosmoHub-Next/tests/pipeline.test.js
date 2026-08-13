@@ -1,9 +1,12 @@
 const assert = require('assert');
-const { EntityNormalizer, AdvancedEntityResolver } = require('../js/ingestion/pipeline.js');
-const { Entity, MatchStatus, Conflict } = require('../js/core/models.js');
+const crypto = require('crypto');
+const { EntityNormalizer, AdvancedEntityResolver, Validator } = require('../js/ingestion/pipeline.js');
+const { FixtureConnector, HttpConnector } = require('../js/ingestion/connectors.js');
+const { Entity, MatchStatus, Conflict, Claim, Source } = require('../js/core/models.js');
+const { InMemoryRepository } = require('../js/core/repository.js');
 
-function testPipeline() {
-    console.log("Running Ingestion Pipeline & Resolution Tests...");
+async function testPipeline() {
+    console.log("Running Extended Ingestion Pipeline Tests...");
 
     // Normalization testing
     const normalizer = new EntityNormalizer();
@@ -36,6 +39,27 @@ function testPipeline() {
     const conflict = new Conflict("conf_1", "claim_a", "claim_b", "Differing foundation dates");
     assert.strictEqual(conflict.status, "UNRESOLVED");
     console.log("✔ Conflict Model initialized");
+
+    // Validation - Temporal Logic
+    const repo = new InMemoryRepository();
+    repo.saveEntity(isar);
+    const validClaim = new Claim("c_temp_1", "org_isar", "TEST", null, "doc_1", "SOURCE_BACKED", "ev", "test", null, null, null, "2020-01-01", "2024-01-01", "ACTIVE");
+    const invalidClaim = new Claim("c_temp_2", "org_isar", "TEST", null, "doc_1", "SOURCE_BACKED", "ev", "test", null, null, null, "2024-01-01", "2020-01-01", "ACTIVE");
+    const validator = new Validator();
+    assert.strictEqual(validator.validateClaim(validClaim, repo), true, "Valid temporal claim rejected");
+    assert.strictEqual(validator.validateClaim(invalidClaim, repo), false, "Invalid temporal claim accepted");
+    console.log("✔ Temporal Validation passed");
+
+    // Connector Hashing and HTTP Errors
+    const dummySrc = new Source("src_dummy", "Pub", "Title", "http://fake.url", "2024-01-01", "API");
+    const httpConn = new HttpConnector(dummySrc, 1); // 1ms timeout
+    const fetchErr = await httpConn.fetch();
+    assert.strictEqual(fetchErr.status, "FAILED", "HttpConnector failed to return FAILED status on error");
+    assert.ok(fetchErr.errorType === "TIMEOUT" || fetchErr.errorType === "NETWORK_FAILURE", "HttpConnector returned incorrect error type");
+    console.log("✔ HttpConnector error handling passed");
 }
 
-testPipeline();
+testPipeline().catch(err => {
+    console.error(err);
+    process.exit(1);
+});

@@ -2,11 +2,14 @@
 let engine = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-  if (typeof rawData !== 'undefined' && typeof QueryEngine !== 'undefined') {
-      engine = new QueryEngine(rawData.entities, rawData.claims, rawData.sources, rawData.documents);
+  if (typeof rawData !== 'undefined' && typeof productData !== 'undefined' && typeof QueryEngine !== 'undefined') {
+      const mergedEntities = rawData.entities.concat(productData.entities);
+      const mergedClaims = rawData.claims.concat(productData.claims);
+
+      engine = new QueryEngine(mergedEntities, mergedClaims, rawData.sources, rawData.documents);
 
       if (typeof InMemoryRepository !== 'undefined') {
-          const repo = new InMemoryRepository(rawData.entities, rawData.claims, rawData.sources, rawData.documents);
+          const repo = new InMemoryRepository(mergedEntities, mergedClaims, rawData.sources, rawData.documents);
           window.searchSvc = new SearchService(repo);
           window.api = new CosmoHubAPI(engine, window.searchSvc);
       }

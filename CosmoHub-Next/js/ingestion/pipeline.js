@@ -1,29 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const { Source, Document, Entity, Claim, SourcePriority, MatchStatus } = require('../core/models.js');
+const { Source, Document, Entity, Claim, SourcePriority, MatchStatus, Conflict } = require('../core/models.js');
 const { InMemoryRepository } = require('../core/repository.js');
 const { EntityResolver } = require('../core/resolver.js');
-
-class SourceConnector {
-    constructor(sourceId, publisher, title, url, priority) {
-        this.source = new Source(sourceId, publisher, title, url, new Date().toISOString(), "API", priority);
-    }
-}
-
-class DocumentFetcher {
-    fetchLocalFixture(filepath, sourceConnector) {
-        const raw = fs.readFileSync(filepath, 'utf8');
-        return new Document(
-            `doc_${Date.now()}`,
-            sourceConnector.source.id,
-            "Local Fixture Dump",
-            "filepath://" + filepath,
-            raw,
-            new Date().toISOString(),
-            "JSON"
-        );
-    }
-}
+const { FixtureConnector, HttpConnector } = require('./connectors.js');
 
 class DocumentParser {
     parse(document) {
@@ -73,20 +53,43 @@ class ClaimBuilder {
     }
 }
 
+class Validator {
+    validateClaim(claim, repo) {
+        if (!claim.subjectId || !repo.getEntity(claim.subjectId)) return false;
+        if (claim.objectId && !repo.getEntity(claim.objectId)) return false;
+        if (!claim.predicate) return false;
+        if (claim.confidence === "SOURCE_BACKED" && (!claim.sourceDocumentId || !claim.evidence)) return false;
+        if (claim.validFrom && claim.validUntil && new Date(claim.validFrom) > new Date(claim.validUntil)) return false;
+        return true;
+    }
+}
+
 class InstitutionIngestionPipeline {
     constructor() {
         this.repo = new InMemoryRepository();
         this.resolver = new AdvancedEntityResolver();
         this.normalizer = new EntityNormalizer();
         this.claimBuilder = new ClaimBuilder();
+        this.validator = new Validator();
     }
 
-    runFixturePipeline(fixturePath) {
-        const connector = new SourceConnector("src_esa_api", "European Space Agency", "ESA Public API", "esa.int/api", SourcePriority.PRIMARY_OFFICIAL);
+    async runPipeline(connector) {
         this.repo.saveSource(connector.source);
 
-        const fetcher = new DocumentFetcher();
-        const doc = fetcher.fetchLocalFixture(fixturePath, connector);
+        // Fetch & Duplicate Doc Detection
+        const fetchResult = await connector.fetch();
+        if (fetchResult.status === "FAILED") {
+            console.error("Ingestion failed:", fetchResult);
+            return;
+        }
+
+        const doc = fetchResult.document;
+        // Check hash
+        const existingDocs = Array.from(this.repo.documents.values());
+        if (existingDocs.some(d => d.hash === fetchResult.hash)) {
+            console.log("DUPLICATE_DOCUMENT detected. Skipping.");
+            return;
+        }
         this.repo.saveDocument(doc);
 
         const parser = new DocumentParser();
@@ -139,27 +142,22 @@ class InstitutionIngestionPipeline {
                             entityId, "FUNDS", recId, doc,
                             `ESA funding: ${act.amount} to ${act.recipient} for ${act.project}`
                         );
-                        this.repo.saveClaim(claim);
+
+                        if (this.validator.validateClaim(claim, this.repo)) {
+                            this.repo.saveClaim(claim);
+                        } else {
+                            console.log("Validation failed for claim:", claim.id);
+                        }
                     }
                 });
             }
         });
 
-        this._addSyntheticProductLayers();
         this._exportEcosystem();
     }
 
-    _addSyntheticProductLayers() {
-        const e1 = new Entity("path_satcom", "Satellite Communications", "LearningPath", [], { xp: 1000 });
-        this.repo.saveEntity(e1);
-        const e2 = new Entity("news_1", "ESA funds Isar", "News", [], { summary: "[SAMPLE] News snippet", date: "2024-05-20" });
-        this.repo.saveEntity(e2);
-
-        this.repo.saveClaim(new Claim("c_synth_1", "path_satcom", "COVERS", "org_european_space_agency", null, "SYNTHETIC", null, "Manual", null, null, null, null, null, "ACTIVE"));
-        this.repo.saveClaim(new Claim("c_synth_2", "news_1", "MENTIONS", "org_isar_aerospace", null, "SYNTHETIC", null, "Manual", null, null, null, null, null, "ACTIVE"));
-    }
-
     _exportEcosystem() {
+        // Output CORE payload exclusively without Synthetic Product pollution natively appended
         const payload = {
             entities: this.repo.getAllEntities(),
             claims: this.repo.getAllClaims(),
@@ -167,17 +165,23 @@ class InstitutionIngestionPipeline {
             documents: Array.from(this.repo.documents.values())
         };
         const script = `const rawData = ${JSON.stringify(payload, null, 2)};\nif(typeof window !== 'undefined') window.rawData = rawData;\nif(typeof module !== 'undefined') module.exports = rawData;`;
-        fs.writeFileSync(path.join(__dirname, '../../data/ecosystem.js'), script);
-        console.log("Successfully ran ingestion pipeline and generated ecosystem.js");
+        fs.writeFileSync(path.join(__dirname, '../../data/core.js'), script);
+        console.log("Successfully ran ingestion pipeline and generated core.js");
     }
 }
 
 if (typeof module !== 'undefined') {
-    module.exports = { InstitutionIngestionPipeline, EntityNormalizer, AdvancedEntityResolver };
+    module.exports = { InstitutionIngestionPipeline, EntityNormalizer, AdvancedEntityResolver, Validator };
 }
 
 // Execute Pipeline only if run directly
 if (require.main === module) {
-    const pipeline = new InstitutionIngestionPipeline();
-    pipeline.runFixturePipeline(path.join(__dirname, '../../fixtures/esa_source.json'));
+    (async () => {
+        const { Source } = require('../core/models.js');
+        const sourceModel = new Source("src_esa_api", "European Space Agency", "ESA Public API", "esa.int/api", new Date().toISOString(), "SOURCE_FIXTURE", 1);
+        const connector = new FixtureConnector(sourceModel, path.join(__dirname, '../../fixtures/esa_source.json'));
+
+        const pipeline = new InstitutionIngestionPipeline();
+        await pipeline.runPipeline(connector);
+    })();
 }
