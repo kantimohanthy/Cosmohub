@@ -54,3 +54,30 @@ function runTests() {
 }
 
 runTests();
+
+function runGlobalInstitutionTests() {
+    console.log("Running Global Institution Tests...");
+    const { Entity, Claim, Source, Document } = require('../js/core/models.js');
+    const { QueryEngine } = require('../js/core/query.js');
+
+    const tum = new Entity("org_tum", "TUM", "Organization", [], { latitude: 48.1496, longitude: 11.5683 });
+    const isar = new Entity("org_isar", "Isar Aerospace", "Organization");
+    const parentClaim = new Claim("c_tum_parent", "org_tum", "PARENT_OF", "org_isar", null, "SYNTHETIC", null, null, null, null, null, null, null, "ACTIVE");
+
+    const engine = new QueryEngine([tum, isar], [parentClaim], [], []);
+
+    // Test Geography Fields
+    const fetchedTum = engine.getEntity("org_tum");
+    assert.strictEqual(fetchedTum.metadata.latitude, 48.1496, "Failed to retrieve correct latitude");
+    assert.strictEqual(fetchedTum.metadata.longitude, 11.5683, "Failed to retrieve correct longitude");
+
+    // Test Parent/Subsidiary Traversal
+    const isarRels = engine.getRelatedEntities("org_isar");
+    const parentRel = isarRels.find(r => r.predicate === "PARENT_OF" && r.direction === "in");
+    assert.ok(parentRel, "Failed to resolve inbound subsidiary relationship");
+    assert.strictEqual(parentRel.entity.id, "org_tum", "Failed to resolve correct parent entity");
+
+    console.log("✔ Global Institution Tests passed");
+}
+
+runGlobalInstitutionTests();

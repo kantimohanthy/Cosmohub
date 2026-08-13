@@ -11,8 +11,10 @@ class QueryEngine {
     }
 
     findEntityByName(nameStr) {
+        if(!nameStr) return null;
         const lower = nameStr.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/\s{2,}/g, " ");
         for (const [id, e] of this.entities) {
+            if(!e.canonicalName) continue;
             const canonicalNorm = e.canonicalName.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, " ").replace(/\s{2,}/g, " ");
             if (canonicalNorm === lower) return e;
             if (e.aliases) {
@@ -38,9 +40,9 @@ class QueryEngine {
         const related = [];
         for (const c of claims) {
             if (c.subjectId === entityId && c.objectId) {
-                related.push({ predicate: c.predicate, entity: this.getEntity(c.objectId), claim: c });
+                related.push({ predicate: c.predicate, entity: this.getEntity(c.objectId), claim: c, direction: 'out' });
             } else if (c.objectId === entityId) {
-                related.push({ predicate: `<- ${c.predicate}`, entity: this.getEntity(c.subjectId), claim: c });
+                related.push({ predicate: c.predicate, entity: this.getEntity(c.subjectId), claim: c, direction: 'in' });
             }
         }
         return related;
@@ -71,6 +73,30 @@ class QueryEngine {
         const results = [];
         for (const [id, e] of this.entities) {
             if (e.entityType === typeStr) results.push(e);
+        }
+        return results;
+    }
+
+    // Advanced filtering for Discovery interface
+    searchEntities(query, typeFilter, regionFilter, subtypeFilter) {
+        const results = [];
+        const qNorm = query ? query.toLowerCase().trim() : "";
+        for (const [id, e] of this.entities) {
+            let match = true;
+            if (typeFilter && typeFilter !== 'All') {
+                if (e.entityType !== typeFilter) match = false;
+            }
+            if (subtypeFilter && subtypeFilter !== 'All') {
+                if (e.metadata.institution_type !== subtypeFilter && e.metadata.type_opp !== subtypeFilter) match = false;
+            }
+            if (regionFilter && regionFilter !== 'Global') {
+                if (e.metadata.continent !== regionFilter && e.metadata.region !== regionFilter && e.metadata.country !== regionFilter) match = false;
+            }
+            if (qNorm) {
+                const nameNorm = e.canonicalName ? e.canonicalName.toLowerCase() : "";
+                if (!nameNorm.includes(qNorm)) match = false;
+            }
+            if (match) results.push(e);
         }
         return results;
     }

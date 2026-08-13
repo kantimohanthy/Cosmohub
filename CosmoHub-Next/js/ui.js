@@ -55,28 +55,77 @@ function renderExplore(container) {
   `;
 }
 
-function renderInstitutions(container) {
-  if (!engine) return;
-  const orgs = engine.getEntitiesByType('Organization');
+function buildInstitutionHTML(orgs) {
   const orgsHtml = orgs.map(o => {
       const isSynth = engine.getClaimsForEntity(o.id).some(c => c.confidence === "SYNTHETIC");
       return `
       <div class="card" onclick="openEntity('${o.id}')" style="border-left: 4px solid var(--cyan);">
          <h3>${o.canonicalName} ${isSynth ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</h3>
          <p>${o.metadata.mission || o.metadata.hq || 'Intelligence Dossier'}</p>
-         <button class="btn">VIEW DOSSIER</button>
+         <div class="card-meta"><span>${o.metadata.institution_type || 'Organization'}</span><span>${o.metadata.country || ''}</span></div>
+         <button class="btn" style="margin-top:16px;">VIEW DOSSIER</button>
       </div>
     `;
   }).join('');
 
+  const mapHtml = orgs.map(o => {
+      if (o.metadata.latitude && o.metadata.longitude) {
+          const x = ((o.metadata.longitude + 10) / 40) * 100;
+          const y = 100 - (((o.metadata.latitude - 35) / 25) * 100);
+          return `<div class="map-pin" style="left:${x}%; top:${y}%;" onclick="openEntity('${o.id}')"></div>
+                  <div class="map-tooltip" style="left:${x}%; top:${y}%;">${o.canonicalName}</div>`;
+      }
+      return '';
+  }).join('');
+
+  return { orgsHtml, mapHtml };
+}
+
+function renderInstitutions(container) {
+  if (!engine) return;
+  const { orgsHtml, mapHtml } = buildInstitutionHTML(engine.getEntitiesByType('Organization'));
+
   container.innerHTML = `
     <div class="wrap">
       <h2 style="margin-bottom:24px;">Institution Intelligence</h2>
-      <div class="grid grid-2">
+
+      <div style="display:flex; gap:16px; margin-bottom:24px;">
+         <input type="text" id="inst-search" placeholder="Search the global space ecosystem..." oninput="handleInstitutionFilter()" style="flex:1; padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+         <select id="inst-type" onchange="handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+            <option>All Types</option><option>Space Agency</option><option>Company</option><option>University</option>
+         </select>
+         <select id="inst-region" onchange="handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+            <option>All Regions</option><option>Europe</option><option>North America</option>
+         </select>
+      </div>
+
+      <div class="map-container" id="map-target">
+          <div class="map-grid"></div>
+          <div style="position:absolute; bottom:16px; left:16px; font-family:var(--mono); font-size:10px; color:var(--cyan);">GLOBAL GEOGRAPHY (PROTOTYPE PROJECTION)</div>
+          ${mapHtml}
+      </div>
+
+      <div class="grid grid-2" id="inst-grid-target">
         ${orgsHtml}
       </div>
     </div>
   `;
+}
+
+window.handleInstitutionFilter = function() {
+    const q = document.getElementById('inst-search').value;
+    const type = document.getElementById('inst-type').value;
+    const region = document.getElementById('inst-region').value;
+
+    const typeFilter = type === 'All Types' ? null : type;
+    const regionFilter = region === 'All Regions' ? null : region;
+
+    const results = engine.searchEntities(q, 'Organization', regionFilter, typeFilter);
+    const { orgsHtml, mapHtml } = buildInstitutionHTML(results);
+
+    document.getElementById('inst-grid-target').innerHTML = orgsHtml;
+    const mapContainer = document.getElementById('map-target');
+    if(mapContainer) mapContainer.innerHTML = '<div class="map-grid"></div><div style="position:absolute; bottom:16px; left:16px; font-family:var(--mono); font-size:10px; color:var(--cyan);">GLOBAL GEOGRAPHY (PROTOTYPE PROJECTION)</div>' + mapHtml;
 }
 
 function renderMissions(container) {
@@ -96,7 +145,7 @@ function renderResearch(container) {
 function renderNews(container) {
   if (!engine) return;
   const items = engine.getEntitiesByType('News');
-  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Verified Record'}</span></div></div>`).join('');
+  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Live Data'}</span></div></div>`).join('');
   container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Space News Feed</h2><div class="grid grid-2">${itemsHtml}</div></div>`;
 }
 
@@ -143,7 +192,7 @@ function renderLearn(container) {
 }
 
 // Entity Detail Modal Logic
-function openEntity(id) {
+window.openEntity = function(id) {
   if (!engine) return;
   const entity = engine.getEntity(id);
   if(!entity) return;
@@ -151,7 +200,7 @@ function openEntity(id) {
   const related = engine.getRelatedEntities(id);
   const isSynth = engine.getClaimsForEntity(id).some(c => c.confidence === "SYNTHETIC");
 
-  let html = `
+  let headerHtml = `
     <div class="entity-header">
        <span class="eyebrow">${entity.entityType} ${isSynth ? '<span class="synthetic-badge">SYNTHETIC</span>' : ''}</span>
        <h2>${entity.canonicalName}</h2>
@@ -159,42 +208,85 @@ function openEntity(id) {
     </div>
   `;
 
-  if(entity.entityType === "Lesson" || entity.entityType === "Project" || entity.entityType === "Quiz") {
-     html += `<button class="btn btn-amber" onclick="awardXP(${entity.metadata.xp || 100})" style="margin-bottom:24px; width:100%;">COMPLETE ACTIVITY (+${entity.metadata.xp || 100} XP)</button>`;
-  }
+  let bodyHtml = '';
 
-  if(related.length > 0) {
-    html += `<div class="relationship-group"><div class="relationship-title">Connections</div>`;
-    related.forEach(r => {
-      const prov = engine.getProvenanceForClaim(r.claim.id);
-      let provText = r.claim.confidence;
-      if (prov && prov.source) {
-          provText += ` <a href="${prov.source.url}" target="_blank" style="color:var(--cyan); text-decoration:underline;">[Source]</a>`;
-      }
+  // Advanced Dossier Layout for Organizations
+  if (entity.entityType === 'Organization') {
+      let relatedMap = { "ACHIEVED": [], "DEVELOPS": [], "PARENT_OF": [], "MENTIONS": [], "OFFERS": [], "OTHER": [] };
 
-      const ev = engine.getEvidenceForClaim(r.claim.id);
-      if (ev) {
-          provText += ` <span style="font-size:9px;">Evidence: "${ev}"</span>`;
-      }
+      related.forEach(r => {
+          const key = r.predicate.replace('<- ', '');
+          if (relatedMap[key]) relatedMap[key].push(r);
+          else relatedMap["OTHER"].push(r);
+      });
 
-      html += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">
-        <span>${r.predicate} <strong style="color:var(--text);">${r.entity.canonicalName}</strong></span>
-        <span class="prov">[${provText}]</span>
+      const renderRelGroup = (arr, title) => {
+          if (!arr || arr.length === 0) return '';
+          let ret = `<div class="dossier-section"><h3>${title}</h3>`;
+          arr.forEach(r => {
+              ret += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">
+                         <span><strong style="color:var(--text);">${r.entity.canonicalName}</strong></span>
+                         <span class="prov">[${r.claim.confidence}]</span>
+                      </div>`;
+          });
+          ret += `</div>`;
+          return ret;
+      };
+
+      bodyHtml += `
+      <div class="dossier-layout">
+         <div class="dossier-sidebar">
+             <a class="dossier-nav-link">OVERVIEW</a>
+             <a class="dossier-nav-link">ACHIEVEMENTS (${relatedMap["ACHIEVED"].length})</a>
+             <a class="dossier-nav-link">MISSIONS / TECH (${relatedMap["DEVELOPS"].length})</a>
+             <a class="dossier-nav-link">SUBSIDIARIES (${relatedMap["PARENT_OF"].length})</a>
+             <a class="dossier-nav-link">NEWS (${relatedMap["MENTIONS"].length})</a>
+             <a class="dossier-nav-link">OPPORTUNITIES (${relatedMap["OFFERS"].length})</a>
+             <a class="dossier-nav-link">OTHER CONNECTIONS (${relatedMap["OTHER"].length})</a>
+         </div>
+         <div class="dossier-content">
+             ${renderRelGroup(relatedMap["ACHIEVED"], "Major Achievements")}
+             ${renderRelGroup(relatedMap["DEVELOPS"], "Missions & Technology")}
+             ${renderRelGroup(relatedMap["OFFERS"], "Opportunities")}
+             ${renderRelGroup(relatedMap["MENTIONS"], "News & Publications")}
+             ${renderRelGroup(relatedMap["PARENT_OF"], "Subsidiaries & Labs")}
+             ${renderRelGroup(relatedMap["OTHER"], "Connected Ecosystem Entities")}
+         </div>
       </div>`;
-    });
-    html += `</div>`;
+  } else {
+      // Standard Fallback Entity Layout
+      if(entity.entityType === "Lesson" || entity.entityType === "Project" || entity.entityType === "Quiz") {
+         bodyHtml += `<button class="btn btn-amber" onclick="awardXP(${entity.metadata.xp || 100})" style="margin-bottom:24px; width:100%;">COMPLETE ACTIVITY (+${entity.metadata.xp || 100} XP)</button>`;
+      }
+
+      if(related.length > 0) {
+        bodyHtml += `<div class="relationship-group"><div class="relationship-title">Connections</div>`;
+        related.forEach(r => {
+          let provText = r.claim.confidence;
+          const ev = engine.getEvidenceForClaim(r.claim.id);
+          if (ev) {
+              provText += ` <span style="font-size:9px;">Evidence: "${ev}"</span>`;
+          }
+
+          bodyHtml += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">
+            <span>${r.predicate} <strong style="color:var(--text);">${r.entity.canonicalName}</strong></span>
+            <span class="prov">[${provText}]</span>
+          </div>`;
+        });
+        bodyHtml += `</div>`;
+      }
   }
 
-  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-content').innerHTML = headerHtml + bodyHtml;
   document.getElementById('entity-modal').classList.add('active');
 }
 
-function closeEntityModal() {
+window.closeEntityModal = function() {
   const modal = document.getElementById('entity-modal');
   if(modal) modal.classList.remove('active');
 }
 
-function awardXP(amount) {
+window.awardXP = function(amount) {
   userState.xp += amount;
   if(userState.xp >= 2000) {
     userState.level++;
