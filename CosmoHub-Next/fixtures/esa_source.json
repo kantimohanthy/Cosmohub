@@ -1,0 +1,23 @@
+{
+  "request_url": "https://www.esa.int/api/missions/v1",
+  "response": [
+    {
+      "org_name": "European Space Agency",
+      "aliases": ["ESA"],
+      "type": "SPACE_AGENCY",
+      "location": { "continent": "Europe", "country": "France", "city": "Paris", "lat": 48.8566, "lng": 2.3522 },
+      "founded": "1975",
+      "mission": "Shape the development of Europe's space capability",
+      "recent_activities": [
+        { "type": "funding", "recipient": "Isar Aerospace", "amount": "1.5M EUR", "project": "Spectrum" },
+        { "type": "funding", "recipient": "Rocket Factory Augsburg", "amount": "500K EUR", "project": "RFA One" }
+      ]
+    },
+    {
+      "org_name": "Isar Aerospace",
+      "type": "COMPANY",
+      "location": { "continent": "Europe", "country": "Germany", "city": "Munich", "lat": 48.1351, "lng": 11.5820 },
+      "mission": "Affordable access to space for small and medium satellites."
+    }
+  ]
+}

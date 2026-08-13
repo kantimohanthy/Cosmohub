@@ -40,11 +40,11 @@ Prototype + hypothesis
 
 That causal chain is what makes the ask credible.
 
-By the end of this pre-seed runway, I would set CosmoHub's target state around four milestones. 
+By the end of this pre-seed runway, I would set CosmoHub's target state around four milestones.
 
-**First,** product: a production-grade Space Intelligence MVP with real source ingestion, search, personalization and an initial knowledge graph—not the current static demonstration. 
-**Second,** market: roughly 1,000–3,000 genuinely activated users, with retention measured properly rather than simply reporting registrations. 
-**Third,** institutional validation: perhaps 3–5 credible pilots or design partnerships with universities, research organizations, communities or space-industry participants. 
+**First,** product: a production-grade Space Intelligence MVP with real source ingestion, search, personalization and an initial knowledge graph—not the current static demonstration.
+**Second,** market: roughly 1,000–3,000 genuinely activated users, with retention measured properly rather than simply reporting registrations.
+**Third,** institutional validation: perhaps 3–5 credible pilots or design partnerships with universities, research organizations, communities or space-industry participants.
 **Fourth,** commercial validation: the first paying customers or sufficiently strong pilot conversion evidence to demonstrate that somebody will pay for a defined workflow.
  Investors will immediately ask how you derived them. At this stage, credible milestones beat fantasy projections.
 
