@@ -4,6 +4,13 @@ let engine = null;
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof rawData !== 'undefined' && typeof QueryEngine !== 'undefined') {
       engine = new QueryEngine(rawData.entities, rawData.claims, rawData.sources, rawData.documents);
+
+      if (typeof InMemoryRepository !== 'undefined') {
+          const repo = new InMemoryRepository(rawData.entities, rawData.claims, rawData.sources, rawData.documents);
+          window.searchSvc = new SearchService(repo);
+          window.api = new CosmoHubAPI(engine, window.searchSvc);
+      }
+
       document.getElementById('global-xp').textContent = userState.xp + ' XP';
       document.getElementById('global-level').textContent = 'LVL ' + userState.level;
   }
@@ -90,11 +97,11 @@ function renderInstitutions(container) {
       <h2 style="margin-bottom:24px;">Institution Intelligence</h2>
 
       <div style="display:flex; gap:16px; margin-bottom:24px;">
-         <input type="text" id="inst-search" placeholder="Search the global space ecosystem..." oninput="handleInstitutionFilter()" style="flex:1; padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
-         <select id="inst-type" onchange="handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+         <input type="text" id="inst-search" placeholder="Search the global space ecosystem..." oninput="window.handleInstitutionFilter()" style="flex:1; padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+         <select id="inst-type" onchange="window.handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
             <option>All Types</option><option>Space Agency</option><option>Company</option><option>University</option>
          </select>
-         <select id="inst-region" onchange="handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
+         <select id="inst-region" onchange="window.handleInstitutionFilter()" style="padding:12px; background:var(--panel); border:1px solid var(--border); color:var(--text); font-family:var(--mono);">
             <option>All Regions</option><option>Europe</option><option>North America</option>
          </select>
       </div>
@@ -120,7 +127,7 @@ window.handleInstitutionFilter = function() {
     const typeFilter = type === 'All Types' ? null : type;
     const regionFilter = region === 'All Regions' ? null : region;
 
-    const results = engine.searchEntities(q, 'Organization', regionFilter, typeFilter);
+    const results = window.searchSvc.searchInstitutions(q, typeFilter, regionFilter);
     const { orgsHtml, mapHtml } = buildInstitutionHTML(results);
 
     document.getElementById('inst-grid-target').innerHTML = orgsHtml;
@@ -145,7 +152,7 @@ function renderResearch(container) {
 function renderNews(container) {
   if (!engine) return;
   const items = engine.getEntitiesByType('News');
-  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Live Data'}</span></div></div>`).join('');
+  const itemsHtml = items.map(n => `<div class="card" onclick="openEntity('${n.id}')"><h3>${n.canonicalName}</h3><p>${n.metadata.summary || ''}</p><div class="card-meta"><span>${n.metadata.date || 'Verified Record'}</span></div></div>`).join('');
   container.innerHTML = `<div class="wrap"><h2 style="margin-bottom:24px;">Space News Feed</h2><div class="grid grid-2">${itemsHtml}</div></div>`;
 }
 
@@ -212,7 +219,7 @@ window.openEntity = function(id) {
 
   // Advanced Dossier Layout for Organizations
   if (entity.entityType === 'Organization') {
-      let relatedMap = { "ACHIEVED": [], "DEVELOPS": [], "PARENT_OF": [], "MENTIONS": [], "OFFERS": [], "OTHER": [] };
+      let relatedMap = { "ACHIEVED": [], "DEVELOPS": [], "PARENT_OF": [], "MENTIONS": [], "OFFERS": [], "FUNDS": [], "RESEARCHES": [], "COLLABORATES_WITH": [], "OTHER": [] };
 
       related.forEach(r => {
           const key = r.predicate.replace('<- ', '');
@@ -221,7 +228,7 @@ window.openEntity = function(id) {
       });
 
       const renderRelGroup = (arr, title) => {
-          if (!arr || arr.length === 0) return '';
+          if (!arr || arr.length === 0) return `<div class="dossier-section"><h3>${title}</h3><p style="color:var(--muted); font-size:13px; font-family:var(--mono);">No data available yet.</p></div>`;
           let ret = `<div class="dossier-section"><h3>${title}</h3>`;
           arr.forEach(r => {
               ret += `<div class="relationship-item" onclick="openEntity('${r.entity.id}')">
@@ -237,18 +244,23 @@ window.openEntity = function(id) {
       <div class="dossier-layout">
          <div class="dossier-sidebar">
              <a class="dossier-nav-link">OVERVIEW</a>
+             <a class="dossier-nav-link">HISTORY</a>
              <a class="dossier-nav-link">ACHIEVEMENTS (${relatedMap["ACHIEVED"].length})</a>
              <a class="dossier-nav-link">MISSIONS / TECH (${relatedMap["DEVELOPS"].length})</a>
              <a class="dossier-nav-link">SUBSIDIARIES (${relatedMap["PARENT_OF"].length})</a>
              <a class="dossier-nav-link">NEWS (${relatedMap["MENTIONS"].length})</a>
              <a class="dossier-nav-link">OPPORTUNITIES (${relatedMap["OFFERS"].length})</a>
+             <a class="dossier-nav-link">FUNDING (${relatedMap["FUNDS"].length})</a>
              <a class="dossier-nav-link">OTHER CONNECTIONS (${relatedMap["OTHER"].length})</a>
          </div>
          <div class="dossier-content">
              ${renderRelGroup(relatedMap["ACHIEVED"], "Major Achievements")}
+             ${renderRelGroup(relatedMap["RESEARCHES"], "Research Areas")}
              ${renderRelGroup(relatedMap["DEVELOPS"], "Missions & Technology")}
              ${renderRelGroup(relatedMap["OFFERS"], "Opportunities")}
+             ${renderRelGroup(relatedMap["FUNDS"], "Funding & Partnerships")}
              ${renderRelGroup(relatedMap["MENTIONS"], "News & Publications")}
+             ${renderRelGroup(relatedMap["COLLABORATES_WITH"], "Collaborators & Facilities")}
              ${renderRelGroup(relatedMap["PARENT_OF"], "Subsidiaries & Labs")}
              ${renderRelGroup(relatedMap["OTHER"], "Connected Ecosystem Entities")}
          </div>
