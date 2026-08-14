@@ -40,6 +40,87 @@ const rawData = {
       "provenanceReferences": [],
       "createdAt": "2026-08-13T22:48:04.936Z",
       "updatedAt": "2026-08-13T22:48:04.936Z"
+    },
+    {
+      "id": "tech_satcom",
+      "canonicalName": "Satellite Communications",
+      "entityType": "Technology",
+      "aliases": [
+        "SATCOM"
+      ],
+      "metadata": {
+        "description": "Telecommunications using artificial satellites.",
+        "maturity": "High",
+        "domain": "Communications"
+      },
+      "provenanceReferences": [],
+      "createdAt": "2026-08-14T01:22:56.531Z",
+      "updatedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "miss_artemis",
+      "canonicalName": "Artemis",
+      "entityType": "Mission",
+      "aliases": [],
+      "metadata": {
+        "status": "Active",
+        "type": "Lunar Exploration",
+        "launch_date": "2022-11-16",
+        "country": "USA"
+      },
+      "provenanceReferences": [],
+      "createdAt": "2026-08-14T01:22:56.535Z",
+      "updatedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "org_nasa",
+      "canonicalName": "NASA",
+      "entityType": "Organization",
+      "aliases": [
+        "National Aeronautics and Space Administration"
+      ],
+      "metadata": {
+        "institution_type": "SPACE_AGENCY",
+        "continent": "North America",
+        "country": "USA",
+        "city": "Washington, D.C.",
+        "latitude": 38.883,
+        "longitude": -77.016,
+        "founded": "1958",
+        "mission": "Explore the unknown in air and space"
+      },
+      "provenanceReferences": [],
+      "createdAt": "2026-08-14T01:22:56.535Z",
+      "updatedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "res_lunar_comm",
+      "canonicalName": "Lunar Orbital Communications Network",
+      "entityType": "Research",
+      "aliases": [],
+      "metadata": {
+        "field": "Communications",
+        "publication_date": "2023-01-15",
+        "summary": "Study on establishing robust high-bandwidth comms around the Moon."
+      },
+      "provenanceReferences": [],
+      "createdAt": "2026-08-14T01:22:56.535Z",
+      "updatedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "per_jane_doe",
+      "canonicalName": "Dr. Jane Doe",
+      "entityType": "Person",
+      "aliases": [
+        "J. Doe"
+      ],
+      "metadata": {
+        "role": "Lead Systems Engineer",
+        "field": "Telecommunications"
+      },
+      "provenanceReferences": [],
+      "createdAt": "2026-08-14T01:22:56.535Z",
+      "updatedAt": "2026-08-14T01:22:56.535Z"
     }
   ],
   "claims": [
@@ -74,6 +155,66 @@ const rawData = {
       "validFrom": null,
       "validUntil": null,
       "provenanceStatus": "ACTIVE"
+    },
+    {
+      "id": "c_nasa_operates_artemis",
+      "subjectId": "org_nasa",
+      "predicate": "OPERATES",
+      "objectId": "miss_artemis",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "c_artemis_uses_satcom",
+      "subjectId": "miss_artemis",
+      "predicate": "USES",
+      "objectId": "tech_satcom",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "c_esa_partners_artemis",
+      "subjectId": "org_european_space_agency",
+      "predicate": "PARTNERS_WITH",
+      "objectId": "miss_artemis",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "c_lunar_comm_research_satcom",
+      "subjectId": "res_lunar_comm",
+      "predicate": "ADVANCES",
+      "objectId": "tech_satcom",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "c_jane_doe_authors_lunar_comm",
+      "subjectId": "per_jane_doe",
+      "predicate": "AUTHORED",
+      "objectId": "res_lunar_comm",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
+    },
+    {
+      "id": "c_jane_doe_works_at_nasa",
+      "subjectId": "per_jane_doe",
+      "predicate": "WORKS_AT",
+      "objectId": "org_nasa",
+      "confidence": "HIGH",
+      "provenanceStatus": "ACTIVE",
+      "extractedDate": "2026-08-14T01:22:56.535Z",
+      "observedAt": "2026-08-14T01:22:56.535Z"
     }
   ],
   "sources": [

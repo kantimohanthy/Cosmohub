@@ -16,7 +16,7 @@ function navigateTo(route) {
 
 document.addEventListener('DOMContentLoaded', () => {
   window.routes = {
-    home: renderHome,
+    home: renderTerminalDashboard,
     explore: renderExplore,
     institutions: renderInstitutions,
     missions: renderMissions,
@@ -35,9 +35,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize
-  if(typeof ecosystemData !== 'undefined') {
-    navigateTo('home');
-  } else {
-    document.getElementById('app-container').innerHTML = '<div class="wrap"><h1>Error: Intelligence Core Not Loaded</h1></div>';
-  }
+  setTimeout(() => { if(typeof window.api !== 'undefined') { navigateTo('home'); } else { document.getElementById('app-container').innerHTML = '<div class="wrap"><h1>Error: Intelligence Core Not Loaded</h1></div>'; } }, 100);
 });

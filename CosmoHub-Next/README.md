@@ -1,32 +1,30 @@
-# CosmoHub-Next (v0.4.1 Ingestion Hardening)
+# CosmoHub-Next (v0.5 Space Intelligence Terminal)
 
-> **INFORMATION IS EVERYWHERE. INTELLIGENCE IS NOWHERE.**
+This is an experimental rewrite of CosmoHub adopting an **Ontology-First** architecture.
 
-CosmoHub-Next is the experimental next-generation product prototype for the CosmoHub space intelligence ecosystem. It is evolving from a discovery prototype into the definitive **Intelligence Layer for the Global Space Ecosystem**.
+> **CURRENT STATUS: SPACE INTELLIGENCE TERMINAL v0.5**
+> CosmoHub is evolving from an educational prototype into a "Bloomberg Terminal for Space." The current build operates a dense, keyboard-driven interface atop a vanilla JavaScript Intelligence Core graph engine.
 
-## Core Vision
-`EDUCATION → DISCOVERY → SPACE INTELLIGENCE → KNOWLEDGE INFRASTRUCTURE → AI SYSTEMS → DEEP-TECH SPACE TECHNOLOGY`
+## The Architecture Loop
+The fundamental loop demonstrated in this build is:
+*Click an Institution → discover a Mission → discover a Technology → discover Research → Learn about it → Opportunity.*
 
-## Architecture
-Built on a strict two-layer architecture:
-1. **Intelligence Core**: A central property graph mapping entities (Institutions, Missions, Tech) and provenanced claims driven by rigorous ingestion pipelines parsing external sources.
-2. **Product Experience**: A lightweight Single Page Application (SPA) providing specialized lenses over the core graph.
+## What Exists Today (MVP)
+* **Intelligence Core:** Pipeline logic mapping `Documents` -> `Claims` -> `Entities` -> `Relationships`. Includes Conflict detection and temporal boundaries.
+* **Terminal UI:** High-density command dashboards, Canvas topology visualization, and Slide-out Context Drawers.
+* **Command Bar:** Global Search (Cmd+K) indexing the entire ontology.
+* **Interactive Intelligence Maps:** SVG-based geographic projections using canonical metadata.
+* **Data Separation:** Strict boundaries between raw ecosystem entities (`data/core.js`) and product/synthetic paths (`data/product.js`).
 
-## Data Stratification
-To preserve strict technical honesty, CosmoHub-Next enforces clear data categorizations:
-*   **LIVE**: Successfully parsed responses from the `HttpConnector` retrieving public intelligence from network targets.
-*   **SOURCE_FIXTURE**: Verifiable real-world data payloads retrieved and saved locally (e.g. `fixtures/esa_source.json`) allowing the parser pipeline to execute reproducibly without requiring live network access during development/testing.
-*   **SYNTHETIC**: Fictionalized product/learning elements (`data/product.js`) strictly separated from the Intelligence Core (`data/core.js`) but explicitly mapped via reference IDs.
+## Running the Terminal
+The repository is a dependency-free Static SPA.
+1. Serve the `CosmoHub-Next/` directory (e.g., `python -m http.server 8000`).
+2. Open `index.html`.
+3. Press `Cmd+K` or `Ctrl+K` to begin exploring the network.
 
-## How to Run
-1. Navigate to the root directory.
-2. Start a local server: `python -m http.server 8000`
-3. Open `http://localhost:8000` in your browser.
-4. Run the data ingestion pipeline: `node js/ingestion/pipeline.js`
-5. Run tests: `node tests/core.test.js` & `node tests/pipeline.test.js`
+## Documentation
+- [Product Architecture](docs/product-architecture.md)
+- [Intelligence Core](docs/intelligence-core.md)
+- [UI & Terminal Design System](docs/ui-architecture.md)
 
-## Current Limitations & Simulated Elements
-- **Simulated Storage**: The underlying API layer (`js/core/api.js`) and database (`js/core/repository.js`) are simulated in-memory abstractions mapping to JSON payloads.
-- **Entity Resolution**: `AdvancedEntityResolver` executes deterministic matching and flagging of `POSSIBLE_MATCH`. It does not execute ML/Fuzzy extraction yet.
-
-See the `docs/` folder for deeper architectural guidelines.
+*Note: The original legacy CosmoHub repository remains untouched at the repository root.*
